@@ -9,6 +9,10 @@ import "./styles.css";
 import machine from "./machines/game";
 import { useMachine } from "@xstate/react";
 
+function getWebSocketHost() {
+  return location.origin.replace(/^http/, "ws");
+}
+
 function App() {
   const [state, send] = useMachine(machine);
   const {
@@ -20,7 +24,7 @@ function App() {
   } = state.context;
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3000");
+    const socket = new WebSocket(getWebSocketHost());
 
     socket.addEventListener("open", function () {
       socket.send("Hello Server! 💩");
