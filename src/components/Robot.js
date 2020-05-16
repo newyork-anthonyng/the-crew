@@ -2,33 +2,29 @@ import React from "react";
 import PropTypes from "prop-types";
 import Card from "./Card";
 import FacedownCard from "./FacedownCard";
+import Task from "./Task";
 import { useService } from "@xstate/react";
 
 function Robot({ robotRef }) {
   const [state, send] = useService(robotRef);
-  const { cards } = state.context;
+  const { cards, tasks } = state.context;
 
   const handleCardClick = (card) => {
     send({ type: "playCard", card });
   };
 
   return (
-    <div>
-      <h1>Robot&apos;s hande</h1>
+    <div className="border-dashed border-4 border-gray-300">
+      <h1>Robot&apos;s hand</h1>
 
-      <div className="h-48 flex">
+      <div className="flex">
         {cards.map((card, index) => {
           const [faceupCard, facedownCard] = card;
 
           return (
-            <div key={index} className="relative w-32">
-              {facedownCard && (
-                <div className="absolute" style={{ left: 10, top: 10 }}>
-                  <FacedownCard />
-                </div>
-              )}
+            <div key={index} className="relative w-32 pb-4">
               {faceupCard && (
-                <div className="absolute">
+                <div>
                   <Card
                     rank={faceupCard.rank}
                     suit={faceupCard.suit}
@@ -36,9 +32,31 @@ function Robot({ robotRef }) {
                   />
                 </div>
               )}
+              {facedownCard && (
+                <div
+                  className="absolute"
+                  style={{ left: 10, top: 10, zIndex: -1 }}
+                >
+                  <FacedownCard />
+                </div>
+              )}
             </div>
           );
         })}
+      </div>
+      <div>
+        <h2>Robot&apos;s Tasks</h2>
+        <div className="flex">
+          {tasks.map((task) => {
+            return (
+              <Task
+                rank={task.rank}
+                suit={task.suit}
+                key={`${task.rank}-${task.suit}`}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

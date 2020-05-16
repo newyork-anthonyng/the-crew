@@ -25,6 +25,7 @@ server.get(LOAD_GAME_URL, () => {
       ],
     },
     partner: {
+      tasks: [{ rank: "7", suit: "blue" }],
       cards: [
         { rank: "?", suit: "?" },
         { rank: "?", suit: "?" },
@@ -33,14 +34,15 @@ server.get(LOAD_GAME_URL, () => {
       ],
     },
     robot: {
+      tasks: [{ rank: "9", suit: "yellow" }],
       cards: [
         [
-          { rank: "1", suit: "yellow", facedown: true },
-          { rank: "2", suit: "blue", facedown: false },
+          { rank: "1", suit: "yellow" },
+          { rank: "2", suit: "blue" },
         ],
         [
-          { rank: "8", suit: "yellow", facedown: true },
-          { rank: "9", suit: "blue", facedown: false },
+          { rank: "8", suit: "yellow" },
+          { rank: "9", suit: "blue" },
         ],
       ],
     },

@@ -83,10 +83,8 @@ const machine = Machine(
 
         return {
           playerMachine: spawn(playerMachine.withContext(player)),
-          partnerMachine: spawn(
-            partnerMachine.withContext({ cards: partner.cards })
-          ),
-          robotMachine: spawn(robotMachine.withContext({ cards: robot.cards })),
+          partnerMachine: spawn(partnerMachine.withContext(partner)),
+          robotMachine: spawn(robotMachine.withContext(robot)),
           playAreaMachine: spawn(
             playAreaMachine.withContext({ cards: playAreaCards })
           ),

@@ -16,10 +16,10 @@ function PlayArea({ playAreaRef }) {
   };
 
   return (
-    <div>
+    <div className="border-dashed border-4 border-gray-600 p-4">
       <h1>Play area</h1>
 
-      <div className="flex h-48">
+      <div className="flex h-64">
         {cards.map((card) => {
           return (
             <Card

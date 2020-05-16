@@ -13,9 +13,9 @@ function Player({ playerRef }) {
   };
 
   return (
-    <div>
+    <div className="border-dashed border-4 border-gray-300">
       <h1>Your hand</h1>
-      <div className="flex h-48">
+      <div className="flex">
         {cards.map((card) => {
           return (
             <Card
@@ -27,16 +27,19 @@ function Player({ playerRef }) {
           );
         })}
       </div>
-      <div className="flex">
-        {tasks.map((task) => {
-          return (
-            <Task
-              rank={task.rank}
-              suit={task.suit}
-              key={`${task.rank}-${task.suit}`}
-            />
-          );
-        })}
+      <div>
+        <h2>Your tasks</h2>
+        <div className="flex">
+          {tasks.map((task) => {
+            return (
+              <Task
+                rank={task.rank}
+                suit={task.suit}
+                key={`${task.rank}-${task.suit}`}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );

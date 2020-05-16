@@ -5,6 +5,7 @@ const machine = Machine(
     id: "robot",
     context: {
       cards: [],
+      tasks: [],
     },
     initial: "ready",
     states: {
