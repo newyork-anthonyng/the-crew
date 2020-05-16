@@ -1,30 +1,30 @@
 import React from "react";
 import { useService } from "@xstate/react";
 import PropTypes from "prop-types";
+import Card from "./Card";
 
 function Player({ playerRef }) {
-  const [state] = useService(playerRef);
+  const [state, send] = useService(playerRef);
   const { cards } = state.context;
+
+  const handleCardClick = (card) => {
+    send({ type: "SELECT_CARD", card });
+  };
 
   return (
     <div>
       <h1>Your hand</h1>
-      <div className="flex">
+      <div className="flex h-48">
         {cards.map((card) => {
           return (
-            <div
+            <Card
+              rank={card.rank}
+              suit={card.suit}
+              onClick={handleCardClick}
               key={`${card.rank}-${card.suit}`}
-              style={{ backgroundColor: card.suit, height: 150, width: 107 }}
-              className="border-solid border border-black rounded cursor-pointer"
-            >
-              <span>{card.rank}</span>
-            </div>
+            />
           );
         })}
-      </div>
-
-      <div className="mt-8">
-        {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
       </div>
     </div>
   );

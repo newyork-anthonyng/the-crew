@@ -1,6 +1,11 @@
 import { Server } from "miragejs";
+
+const LOAD_GAME_URL = "/api/load";
+const PLAY_CARD_URL = "/api/play-card";
+const API_ERROR_CODE = 1;
+
 const server = new Server();
-server.get("/api/load", () => {
+server.get(LOAD_GAME_URL, () => {
   return {
     playAreaCards: [
       { rank: "4", suit: "pink" },
@@ -14,9 +19,10 @@ server.get("/api/load", () => {
   };
 });
 
-const API_ERROR_CODE = 1;
+server.post(PLAY_CARD_URL, () => {
+  return {};
+});
 
-const LOAD_GAME_URL = "/api/load";
 function loadGame() {
   return new Promise((resolve, reject) => {
     fetch(LOAD_GAME_URL)
@@ -35,4 +41,30 @@ function loadGame() {
   });
 }
 
-export { loadGame };
+function playCard(card) {
+  return new Promise((resolve, reject) => {
+    fetch(PLAY_CARD_URL, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        card,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          reject({ code: API_ERROR_CODE, message: "Something went wrong" });
+        }
+      })
+      .then((response) => {
+        return resolve(response);
+      })
+      .catch((e) => {
+        reject({ code: API_ERROR_CODE, message: e });
+      });
+  });
+}
+
+export { loadGame, playCard };
