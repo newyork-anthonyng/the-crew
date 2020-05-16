@@ -9,10 +9,13 @@ const API_ERROR_CODE = 1;
 const server = new Server();
 server.get(LOAD_GAME_URL, () => {
   return {
-    playAreaCards: [
-      { rank: "4", suit: "pink" },
-      { rank: "5", suit: "yellow" },
-    ],
+    playArea: {
+      tasks: [{ rank: "4", suit: "pink" }],
+      cards: [
+        { rank: "4", suit: "pink" },
+        { rank: "5", suit: "yellow" },
+      ],
+    },
     player: {
       tasks: [
         { rank: "7", suit: "pink" },

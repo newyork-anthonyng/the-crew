@@ -77,7 +77,7 @@ const machine = Machine(
           player,
           partner,
           robot,
-          playAreaCards,
+          playArea,
           discardAreaCards,
         } = event.data;
 
@@ -85,9 +85,7 @@ const machine = Machine(
           playerMachine: spawn(playerMachine.withContext(player)),
           partnerMachine: spawn(partnerMachine.withContext(partner)),
           robotMachine: spawn(robotMachine.withContext(robot)),
-          playAreaMachine: spawn(
-            playAreaMachine.withContext({ cards: playAreaCards })
-          ),
+          playAreaMachine: spawn(playAreaMachine.withContext(playArea)),
           discardAreaMachine: spawn(
             discardAreaMachine.withContext({ cards: discardAreaCards })
           ),

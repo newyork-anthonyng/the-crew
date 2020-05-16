@@ -5,6 +5,7 @@ const machine = Machine(
     id: "play-area",
     context: {
       cards: [],
+      tasks: [],
     },
     initial: "ready",
     states: {

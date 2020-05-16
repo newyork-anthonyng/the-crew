@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useService } from "@xstate/react";
 import Card from "./Card";
+import Task from "./Task";
 
 function PlayArea({ playAreaRef }) {
   const [state, send] = useService(playAreaRef);
-  const { cards } = state.context;
+  const { cards, tasks } = state.context;
 
   const handleCardClick = (card) => {
     send({ type: "pickupCard", card });
@@ -19,7 +20,7 @@ function PlayArea({ playAreaRef }) {
     <div className="border-dashed border-4 border-gray-600 p-4">
       <h1>Play area</h1>
 
-      <div className="flex h-64">
+      <div className="flex">
         {cards.map((card) => {
           return (
             <Card
@@ -39,6 +40,23 @@ function PlayArea({ playAreaRef }) {
       >
         Move play area cards to discard
       </button>
+
+      {tasks.length > 0 && (
+        <div>
+          <p>Assign player tasks</p>
+          <div>
+            {tasks.map((task) => {
+              return (
+                <Task
+                  rank={task.rank}
+                  suit={task.suit}
+                  key={`${task.rank}-${task.suit}`}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
