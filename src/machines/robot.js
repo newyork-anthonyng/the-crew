@@ -22,12 +22,21 @@ const machine = Machine(
       removeCard: assign((context, event) => {
         const { card: selectedCard } = event;
 
-        return {
-          cards: context.cards.filter((card) => {
-            const isSameRank = card.rank === selectedCard.rank;
-            const isSameSuit = card.suit === selectedCard.suit;
+        const cards = context.cards.map((column) => {
+          const faceupCard = column[0];
+          const isSameRank = faceupCard.rank === selectedCard.rank;
+          const isSameSuit = faceupCard.suit === selectedCard.suit;
 
-            return !(isSameRank && isSameSuit);
+          if (isSameRank && isSameSuit) {
+            return [column[1]];
+          } else {
+            return column;
+          }
+        });
+
+        return {
+          cards: cards.filter((card) => {
+            return !!card[0];
           }),
         };
       }),

@@ -23,7 +23,16 @@ server.get(LOAD_GAME_URL, () => {
       { rank: "?", suit: "?" },
       { rank: "?", suit: "?" },
     ],
-    robotCards: [{ rank: "4", suit: "blue" }],
+    robotCards: [
+      [
+        { rank: "1", suit: "yellow", facedown: true },
+        { rank: "2", suit: "blue", facedown: false },
+      ],
+      [
+        { rank: "8", suit: "yellow", facedown: true },
+        { rank: "9", suit: "blue", facedown: false },
+      ],
+    ],
     discardAreaCards: [
       { rank: "6", suit: "blue" },
       { rank: "7", suit: "blue" },
