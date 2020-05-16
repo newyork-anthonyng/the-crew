@@ -2,10 +2,11 @@ import React from "react";
 import { useService } from "@xstate/react";
 import PropTypes from "prop-types";
 import Card from "./Card";
+import Task from "./Task";
 
 function Player({ playerRef }) {
   const [state, send] = useService(playerRef);
-  const { cards } = state.context;
+  const { cards, tasks } = state.context;
 
   const handleCardClick = (card) => {
     send({ type: "selectCard", card });
@@ -22,6 +23,17 @@ function Player({ playerRef }) {
               suit={card.suit}
               onClick={handleCardClick}
               key={`${card.rank}-${card.suit}`}
+            />
+          );
+        })}
+      </div>
+      <div className="flex">
+        {tasks.map((task) => {
+          return (
+            <Task
+              rank={task.rank}
+              suit={task.suit}
+              key={`${task.rank}-${task.suit}`}
             />
           );
         })}
