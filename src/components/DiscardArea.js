@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FacedownCard from "./FacedownCard";
+import DiscardCard from "./DiscardCard";
 import { useService } from "@xstate/react";
 
 function DiscardArea({ discardAreaRef }) {
@@ -14,7 +14,7 @@ function DiscardArea({ discardAreaRef }) {
       <div className="relative">
         {cards.map((card, index) => {
           return (
-            <FacedownCard
+            <DiscardCard
               style={{ left: index * 10, top: index * 10 }}
               key={`${card.rank}-${card.suit}`}
             />

@@ -1,15 +1,21 @@
 import React from "react";
 import { render } from "react-dom";
-import Player from "./Player";
-import PlayArea from "./PlayArea";
-import DiscardArea from "./DiscardArea";
+import Player from "./components/Player";
+import Partner from "./components/Partner";
+import PlayArea from "./components/PlayArea";
+import DiscardArea from "./components/DiscardArea";
 import "./styles.css";
 import machine from "./machines/game";
 import { useMachine } from "@xstate/react";
 
 function App() {
   const [state] = useMachine(machine);
-  const { playAreaMachine, playerMachine, discardAreaMachine } = state.context;
+  const {
+    playAreaMachine,
+    playerMachine,
+    partnerMachine,
+    discardAreaMachine,
+  } = state.context;
 
   if (state.matches("loading")) {
     return (
@@ -32,6 +38,8 @@ function App() {
       <Player playerRef={playerMachine} />
 
       <PlayArea playAreaRef={playAreaMachine} />
+
+      <Partner partnerRef={partnerMachine} />
 
       <DiscardArea discardAreaRef={discardAreaMachine} />
     </div>

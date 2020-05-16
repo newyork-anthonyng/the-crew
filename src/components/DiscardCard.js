@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function FacedownCard({ style }) {
+function DiscardCard({ style }) {
   const cardStyle = Object.assign(
     {
       height: 150,
@@ -17,8 +17,8 @@ function FacedownCard({ style }) {
   );
 }
 
-FacedownCard.propTypes = {
+DiscardCard.propTypes = {
   style: PropTypes.object,
 };
 
-export default FacedownCard;
+export default DiscardCard;

@@ -1,5 +1,6 @@
 import { Machine, assign, spawn } from "xstate";
 import playerMachine from "./player";
+import partnerMachine from "./partner";
 import playAreaMachine from "./playArea";
 import discardAreaMachine from "./discardAreaMachine";
 import {
@@ -13,7 +14,9 @@ const machine = Machine(
     id: "game",
     context: {
       playerMachine: null,
+      partnerMachine: null,
       playAreaMachine: null,
+      discardAreaMachine: null,
     },
     initial: "loading",
     states: {
@@ -49,10 +52,18 @@ const machine = Machine(
     },
     actions: {
       cacheGameState: assign((_, event) => {
-        const { playerCards, playAreaCards, discardAreaCards } = event.data;
+        const {
+          playerCards,
+          playAreaCards,
+          discardAreaCards,
+          partnerCards,
+        } = event.data;
         return {
           playerMachine: spawn(
             playerMachine.withContext({ cards: playerCards })
+          ),
+          partnerMachine: spawn(
+            partnerMachine.withContext({ cards: partnerCards })
           ),
           playAreaMachine: spawn(
             playAreaMachine.withContext({ cards: playAreaCards })
