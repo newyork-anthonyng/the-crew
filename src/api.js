@@ -220,7 +220,7 @@ function returnTask(task) {
   });
 }
 
-function disardCards() {
+function discardCards() {
   return new Promise((resolve, reject) => {
     fetch(DISCARD_CARDS_URL, {
       method: "POST",
@@ -250,5 +250,5 @@ export {
   pickupCard,
   pickupTask,
   returnTask,
-  disardCards,
+  discardCards,
 };
