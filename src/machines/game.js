@@ -1,7 +1,11 @@
 import { Machine, assign, spawn } from "xstate";
 import playerMachine from "./player";
 import playAreaMachine from "./playArea";
-import { loadGame, playCard as notifyPlayCard } from "../api";
+import {
+  loadGame,
+  playCard as notifyPlayCard,
+  pickupCard as notifyPickupCard,
+} from "../api";
 
 const machine = Machine(
   {
@@ -26,6 +30,9 @@ const machine = Machine(
         on: {
           playCard: {
             actions: ["addToPlayArea", "notifyPlayCard"],
+          },
+          pickupCard: {
+            actions: ["addToPlayer", "notifyPickupCard"],
           },
         },
       },
@@ -55,8 +62,18 @@ const machine = Machine(
           card: event.card,
         });
       },
+      addToPlayer: (context, event) => {
+        const { playerMachine } = context;
+        playerMachine.send({
+          type: "pickupCard",
+          card: event.card,
+        });
+      },
       notifyPlayCard: (context, event) => {
         notifyPlayCard(event.card);
+      },
+      notifyPickupCard: (_, event) => {
+        notifyPickupCard(event.card);
       },
     },
   }

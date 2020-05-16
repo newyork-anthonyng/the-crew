@@ -4,8 +4,12 @@ import { useService } from "@xstate/react";
 import Card from "./Card";
 
 function PlayArea({ playAreaRef }) {
-  const [state] = useService(playAreaRef);
+  const [state, send] = useService(playAreaRef);
   const { cards } = state.context;
+
+  const handleCardClick = (card) => {
+    send({ type: "pickupCard", card });
+  };
 
   return (
     <div>
@@ -15,6 +19,7 @@ function PlayArea({ playAreaRef }) {
         {cards.map((card) => {
           return (
             <Card
+              onClick={handleCardClick}
               suit={card.suit}
               rank={card.rank}
               key={`${card.rank}-${card.suit}`}

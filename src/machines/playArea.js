@@ -1,4 +1,4 @@
-import { Machine, assign } from "xstate";
+import { Machine, assign, sendParent } from "xstate";
 
 const machine = Machine(
   {
@@ -13,6 +13,9 @@ const machine = Machine(
           playCard: {
             actions: ["addCard"],
           },
+          pickupCard: {
+            actions: ["removeCard", "parentPickupCard"],
+          },
         },
       },
     },
@@ -20,9 +23,28 @@ const machine = Machine(
   {
     actions: {
       addCard: assign((context, event) => {
+        const newCards = context.cards.slice();
+        newCards.push(event.card);
+
         return {
-          cards: [...context.cards, event.card],
+          cards: newCards,
         };
+      }),
+      removeCard: assign((context, event) => {
+        const { card: selectedCard } = event;
+
+        return {
+          cards: context.cards.filter((card) => {
+            const isSameRank = card.rank === selectedCard.rank;
+            const isSameSuit = card.suit === selectedCard.suit;
+
+            return !(isSameRank && isSameSuit);
+          }),
+        };
+      }),
+
+      parentPickupCard: sendParent((_, event) => {
+        return { type: "pickupCard", card: event.card };
       }),
     },
   }

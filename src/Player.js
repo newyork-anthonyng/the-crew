@@ -8,7 +8,7 @@ function Player({ playerRef }) {
   const { cards } = state.context;
 
   const handleCardClick = (card) => {
-    send({ type: "SELECT_CARD", card });
+    send({ type: "selectCard", card });
   };
 
   return (
