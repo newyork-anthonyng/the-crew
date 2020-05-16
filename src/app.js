@@ -28,16 +28,15 @@ function App() {
 
     socket.addEventListener("message", (event) => {
       console.log(`Message from server: ${event.data}`);
+
+      send({ type: "applesauce", card: { suit: "trump", rank: "7" } });
     });
 
     return () => {
       socket.send("close");
       socket.close();
     };
-  });
-
-  const test = () =>
-    send({ type: "applesauce", card: { suit: "trump", rank: "7" } });
+  }, []);
 
   if (state.matches("loading")) {
     return (
@@ -57,12 +56,11 @@ function App() {
 
   return (
     <div>
-      <button
-        onClick={test}
+      {/* <button
         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
       >
         Debug: Press button to have Partner play a card
-      </button>
+      </button> */}
       <Player playerRef={playerMachine} />
 
       <PlayArea playAreaRef={playAreaMachine} />
