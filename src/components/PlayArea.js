@@ -16,10 +16,10 @@ function PlayArea({ playAreaRef }) {
   };
 
   return (
-    <div className="h-48">
+    <div>
       <h1>Play area</h1>
 
-      <div className="flex">
+      <div className="flex h-48">
         {cards.map((card) => {
           return (
             <Card
@@ -32,7 +32,11 @@ function PlayArea({ playAreaRef }) {
         })}
       </div>
 
-      <button type="button" onClick={handleDiscardCardClick}>
+      <button
+        type="button"
+        onClick={handleDiscardCardClick}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
         Move play area cards to discard
       </button>
     </div>

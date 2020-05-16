@@ -1,14 +1,32 @@
-import { Machine } from "xstate";
+import { Machine, assign } from "xstate";
 
-const machine = Machine({
-  id: "partner",
-  context: {
-    cards: [],
+const machine = Machine(
+  {
+    id: "partner",
+    context: {
+      cards: [],
+    },
+    initial: "ready",
+    states: {
+      ready: {
+        on: {
+          playCard: {
+            actions: ["removeCard"],
+          },
+        },
+      },
+    },
   },
-  initial: "ready",
-  states: {
-    ready: {},
-  },
-});
+  {
+    actions: {
+      removeCard: assign((context) => {
+        const { cards } = context;
+        return {
+          cards: cards.slice(1),
+        };
+      }),
+    },
+  }
+);
 
 export default machine;

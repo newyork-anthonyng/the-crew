@@ -41,6 +41,20 @@ const machine = Machine(
           discardCards: {
             actions: ["addCardsToDiscardArea", "notifyDiscardCards"],
           },
+          applesauce: {
+            actions: [
+              (context, event) => {
+                // @FUTURE: This tests that partner can play a card
+                context.playAreaMachine.send({
+                  type: "playCard",
+                  card: event.card,
+                });
+                context.partnerMachine.send({
+                  type: "playCard",
+                });
+              },
+            ],
+          },
         },
       },
       error: {},

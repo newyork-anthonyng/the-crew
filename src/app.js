@@ -9,13 +9,16 @@ import machine from "./machines/game";
 import { useMachine } from "@xstate/react";
 
 function App() {
-  const [state] = useMachine(machine);
+  const [state, send] = useMachine(machine);
   const {
     playAreaMachine,
     playerMachine,
     partnerMachine,
     discardAreaMachine,
   } = state.context;
+
+  const test = () =>
+    send({ type: "applesauce", card: { suit: "trump", rank: "7" } });
 
   if (state.matches("loading")) {
     return (
@@ -35,6 +38,12 @@ function App() {
 
   return (
     <div>
+      <button
+        onClick={test}
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Debug: Press button to have Partner play a card
+      </button>
       <Player playerRef={playerMachine} />
 
       <PlayArea playAreaRef={playAreaMachine} />
