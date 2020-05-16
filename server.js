@@ -1,7 +1,3 @@
-const webpack = require("webpack");
-const webpackDevMiddleware = require("webpack-dev-middleware");
-const webpackHotMiddleware = require("webpack-hot-middleware");
-const config = require("./webpack.config");
 const path = require("path");
 const express = require("express");
 const app = express();
@@ -18,6 +14,11 @@ wss.on("connection", (ws) => {
 });
 
 if (process.env.DEV_SERVER) {
+  const webpack = require("webpack");
+  const webpackDevMiddleware = require("webpack-dev-middleware");
+  const webpackHotMiddleware = require("webpack-hot-middleware");
+  const config = require("./webpack.config");
+
   config.entry.app.unshift(
     "webpack-hot-middleware/client?reload=true&timeout=1000"
   );
