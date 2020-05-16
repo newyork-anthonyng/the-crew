@@ -17,6 +17,12 @@ const machine = Machine(
           pickupCard: {
             actions: ["removeCard", "parentPickupCard"],
           },
+          pickupTask: {
+            actions: ["removeTask", "parentPickupTask"],
+          },
+          returnTask: {
+            actions: ["addTask"],
+          },
           discardCards: {
             actions: ["parentDiscardCards"],
             target: "discarding",
@@ -53,11 +59,34 @@ const machine = Machine(
           }),
         };
       }),
+      addTask: assign((context, event) => {
+        const newTasks = context.tasks.slice();
+        newTasks.push(event.task);
+
+        return {
+          tasks: newTasks,
+        };
+      }),
+      removeTask: assign((context, event) => {
+        const { task: selectedTask } = event;
+
+        return {
+          tasks: context.tasks.filter((task) => {
+            const isSameRank = task.rank === selectedTask.rank;
+            const isSameSuit = task.suit === selectedTask.suit;
+
+            return !(isSameRank && isSameSuit);
+          }),
+        };
+      }),
       removeAllCards: assign(() => {
         return { cards: [] };
       }),
       parentPickupCard: sendParent((_, event) => {
         return { type: "pickupCard", card: event.card };
+      }),
+      parentPickupTask: sendParent((_, event) => {
+        return { type: "pickupTask", task: event.task };
       }),
       parentDiscardCards: sendParent((context) => {
         return { type: "discardCards", cards: context.cards };

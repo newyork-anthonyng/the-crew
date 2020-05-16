@@ -9,6 +9,8 @@ import {
   playCard as notifyPlayCard,
   robotPlayCard as notifyRobotPlayCard,
   pickupCard as notifyPickupCard,
+  pickupTask as notifyPickupTask,
+  returnTask as notifyReturnTask,
   discardCards as notifyDiscardCards,
 } from "../api";
 
@@ -44,6 +46,12 @@ const machine = Machine(
           },
           pickupCard: {
             actions: ["addToPlayer", "notifyPickupCard"],
+          },
+          pickupTask: {
+            actions: ["addTaskToPlayer", "notifyPickupTask"],
+          },
+          returnTask: {
+            actions: ["addTaskToPlayArea", "notifyReturnTask"],
           },
           discardCards: {
             actions: ["addCardsToDiscardArea", "notifyDiscardCards"],
@@ -105,6 +113,20 @@ const machine = Machine(
           card: event.card,
         });
       },
+      addTaskToPlayer: (context, event) => {
+        const { playerMachine } = context;
+        playerMachine.send({
+          type: "pickupTask",
+          task: event.task,
+        });
+      },
+      addTaskToPlayArea: (context, event) => {
+        const { playAreaMachine } = context;
+        playAreaMachine.send({
+          type: "returnTask",
+          task: event.task,
+        });
+      },
       addCardsToDiscardArea: (context, event) => {
         const { discardAreaMachine } = context;
         const { cards } = event;
@@ -125,8 +147,14 @@ const machine = Machine(
       notifyPickupCard: (_, event) => {
         notifyPickupCard(event.card);
       },
+      notifyPickupTask: (_, event) => {
+        notifyPickupTask(event.task);
+      },
       notifyDiscardCards: () => {
         notifyDiscardCards();
+      },
+      notifyReturnTask: (_, event) => {
+        notifyReturnTask(event.task);
       },
     },
   }

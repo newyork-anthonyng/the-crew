@@ -17,6 +17,12 @@ const machine = Machine(
           pickupCard: {
             actions: ["pickupCard"],
           },
+          pickupTask: {
+            actions: ["pickupTask"],
+          },
+          returnTask: {
+            actions: ["removeTask", "parentReturnTask"],
+          },
         },
       },
     },
@@ -45,6 +51,29 @@ const machine = Machine(
         return {
           cards: newCards,
         };
+      }),
+      pickupTask: assign((context, event) => {
+        const newTasks = context.tasks.slice();
+        newTasks.push(event.task);
+
+        return {
+          tasks: newTasks,
+        };
+      }),
+      removeTask: assign((context, event) => {
+        const { task: selectedTask } = event;
+
+        return {
+          tasks: context.tasks.filter((task) => {
+            const isSameRank = task.rank === selectedTask.rank;
+            const isSameSuit = task.suit === selectedTask.suit;
+
+            return !(isSameRank && isSameSuit);
+          }),
+        };
+      }),
+      parentReturnTask: sendParent((_, event) => {
+        return { type: "returnTask", task: event.task };
       }),
     },
   }

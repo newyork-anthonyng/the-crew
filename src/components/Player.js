@@ -12,6 +12,10 @@ function Player({ playerRef }) {
     send({ type: "selectCard", card });
   };
 
+  const handleTaskClick = (task) => {
+    send({ type: "returnTask", task });
+  };
+
   return (
     <div className="border-dashed border-4 border-gray-300">
       <h1>Your hand</h1>
@@ -33,6 +37,7 @@ function Player({ playerRef }) {
           {tasks.map((task) => {
             return (
               <Task
+                onClick={handleTaskClick}
                 rank={task.rank}
                 suit={task.suit}
                 key={`${task.rank}-${task.suit}`}

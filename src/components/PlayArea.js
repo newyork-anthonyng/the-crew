@@ -12,6 +12,10 @@ function PlayArea({ playAreaRef }) {
     send({ type: "pickupCard", card });
   };
 
+  const handleTaskClick = (task) => {
+    send({ type: "pickupTask", task });
+  };
+
   const handleDiscardCardClick = () => {
     send({ type: "discardCards" });
   };
@@ -44,10 +48,11 @@ function PlayArea({ playAreaRef }) {
       {tasks.length > 0 && (
         <div>
           <p>Assign player tasks</p>
-          <div>
+          <div className="flex">
             {tasks.map((task) => {
               return (
                 <Task
+                  onClick={handleTaskClick}
                   rank={task.rank}
                   suit={task.suit}
                   key={`${task.rank}-${task.suit}`}
