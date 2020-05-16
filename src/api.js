@@ -23,6 +23,7 @@ server.get(LOAD_GAME_URL, () => {
       { rank: "?", suit: "?" },
       { rank: "?", suit: "?" },
     ],
+    robotCards: [{ rank: "4", suit: "blue" }],
     discardAreaCards: [
       { rank: "6", suit: "blue" },
       { rank: "7", suit: "blue" },
@@ -63,6 +64,34 @@ function playCard(card) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        actor: "player",
+        card,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          reject({ code: API_ERROR_CODE, message: "Something went wrong" });
+        }
+      })
+      .then((response) => {
+        return resolve(response);
+      })
+      .catch((e) => {
+        reject({ code: API_ERROR_CODE, message: e });
+      });
+  });
+}
+
+function robotPlayCard(card) {
+  return new Promise((resolve, reject) => {
+    fetch(PLAY_CARD_URL, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        actor: "robot",
         card,
       }),
     })
@@ -106,4 +135,4 @@ function pickupCard(card) {
   });
 }
 
-export { loadGame, playCard, pickupCard };
+export { loadGame, playCard, robotPlayCard, pickupCard };

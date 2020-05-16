@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import Player from "./components/Player";
 import Partner from "./components/Partner";
 import PlayArea from "./components/PlayArea";
+import Robot from "./components/Robot";
 import DiscardArea from "./components/DiscardArea";
 import "./styles.css";
 import machine from "./machines/game";
@@ -14,6 +15,7 @@ function App() {
     playAreaMachine,
     playerMachine,
     partnerMachine,
+    robotMachine,
     discardAreaMachine,
   } = state.context;
 
@@ -49,6 +51,8 @@ function App() {
       <PlayArea playAreaRef={playAreaMachine} />
 
       <Partner partnerRef={partnerMachine} />
+
+      <Robot robotRef={robotMachine} />
 
       <DiscardArea discardAreaRef={discardAreaMachine} />
     </div>
