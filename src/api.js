@@ -3,6 +3,7 @@ import { Server } from "miragejs";
 const LOAD_GAME_URL = "/api/load";
 const PLAY_CARD_URL = "/api/play-card";
 const PICKUP_CARD_URL = "/api/pickup-card";
+const DISCARD_CARDS_URL = "/api/discard-cards";
 const API_ERROR_CODE = 1;
 
 const server = new Server();
@@ -12,27 +13,37 @@ server.get(LOAD_GAME_URL, () => {
       { rank: "4", suit: "pink" },
       { rank: "5", suit: "yellow" },
     ],
-    playerCards: [
-      { rank: "1", suit: "pink" },
-      { rank: "2", suit: "yellow" },
-      { rank: "3", suit: "green" },
-    ],
-    partnerCards: [
-      { rank: "?", suit: "?" },
-      { rank: "?", suit: "?" },
-      { rank: "?", suit: "?" },
-      { rank: "?", suit: "?" },
-    ],
-    robotCards: [
-      [
-        { rank: "1", suit: "yellow", facedown: true },
-        { rank: "2", suit: "blue", facedown: false },
+    player: {
+      tasks: [
+        { rank: "7", suit: "pink" },
+        { rank: "2", suit: "yellow" },
       ],
-      [
-        { rank: "8", suit: "yellow", facedown: true },
-        { rank: "9", suit: "blue", facedown: false },
+      cards: [
+        { rank: "1", suit: "pink" },
+        { rank: "2", suit: "yellow" },
+        { rank: "3", suit: "green" },
       ],
-    ],
+    },
+    partner: {
+      cards: [
+        { rank: "?", suit: "?" },
+        { rank: "?", suit: "?" },
+        { rank: "?", suit: "?" },
+        { rank: "?", suit: "?" },
+      ],
+    },
+    robot: {
+      cards: [
+        [
+          { rank: "1", suit: "yellow", facedown: true },
+          { rank: "2", suit: "blue", facedown: false },
+        ],
+        [
+          { rank: "8", suit: "yellow", facedown: true },
+          { rank: "9", suit: "blue", facedown: false },
+        ],
+      ],
+    },
     discardAreaCards: [
       { rank: "6", suit: "blue" },
       { rank: "7", suit: "blue" },
@@ -144,4 +155,27 @@ function pickupCard(card) {
   });
 }
 
-export { loadGame, playCard, robotPlayCard, pickupCard };
+function disardCards() {
+  return new Promise((resolve, reject) => {
+    fetch(DISCARD_CARDS_URL, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          reject({ code: API_ERROR_CODE, message: "Something went wrong" });
+        }
+      })
+      .then((response) => {
+        return resolve(response);
+      })
+      .catch((e) => {
+        reject({ code: API_ERROR_CODE, message: e });
+      });
+  });
+}
+
+export { loadGame, playCard, robotPlayCard, pickupCard, disardCards };

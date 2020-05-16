@@ -9,6 +9,7 @@ import {
   playCard as notifyPlayCard,
   robotPlayCard as notifyRobotPlayCard,
   pickupCard as notifyPickupCard,
+  discardCards as notifyDiscardCards,
 } from "../api";
 
 const machine = Machine(
@@ -73,21 +74,19 @@ const machine = Machine(
     actions: {
       cacheGameState: assign((_, event) => {
         const {
-          playerCards,
-          partnerCards,
-          robotCards,
+          player,
+          partner,
+          robot,
           playAreaCards,
           discardAreaCards,
         } = event.data;
 
         return {
-          playerMachine: spawn(
-            playerMachine.withContext({ cards: playerCards })
-          ),
+          playerMachine: spawn(playerMachine.withContext(player)),
           partnerMachine: spawn(
-            partnerMachine.withContext({ cards: partnerCards })
+            partnerMachine.withContext({ cards: partner.cards })
           ),
-          robotMachine: spawn(robotMachine.withContext({ cards: robotCards })),
+          robotMachine: spawn(robotMachine.withContext({ cards: robot.cards })),
           playAreaMachine: spawn(
             playAreaMachine.withContext({ cards: playAreaCards })
           ),
@@ -129,6 +128,9 @@ const machine = Machine(
       },
       notifyPickupCard: (_, event) => {
         notifyPickupCard(event.card);
+      },
+      notifyDiscardCards: () => {
+        notifyDiscardCards();
       },
     },
   }
