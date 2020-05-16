@@ -1,6 +1,7 @@
 import { Machine, assign, spawn } from "xstate";
 import playerMachine from "./player";
 import playAreaMachine from "./playArea";
+import discardAreaMachine from "./discardAreaMachine";
 import {
   loadGame,
   playCard as notifyPlayCard,
@@ -44,14 +45,17 @@ const machine = Machine(
       loadGame: loadGame,
     },
     actions: {
-      cacheGameState: assign((context, event) => {
-        const { playerCards, playAreaCards } = event.data;
+      cacheGameState: assign((_, event) => {
+        const { playerCards, playAreaCards, discardAreaCards } = event.data;
         return {
           playerMachine: spawn(
             playerMachine.withContext({ cards: playerCards })
           ),
           playAreaMachine: spawn(
             playAreaMachine.withContext({ cards: playAreaCards })
+          ),
+          discardAreaMachine: spawn(
+            discardAreaMachine.withContext({ cards: discardAreaCards })
           ),
         };
       }),
@@ -69,7 +73,7 @@ const machine = Machine(
           card: event.card,
         });
       },
-      notifyPlayCard: (context, event) => {
+      notifyPlayCard: (_, event) => {
         notifyPlayCard(event.card);
       },
       notifyPickupCard: (_, event) => {
