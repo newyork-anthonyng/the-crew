@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { render } from "react-dom";
 import Player from "./components/Player";
 import Partner from "./components/Partner";
@@ -18,6 +18,23 @@ function App() {
     robotMachine,
     discardAreaMachine,
   } = state.context;
+
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.addEventListener("open", function () {
+      socket.send("Hello Server! 💩");
+    });
+
+    socket.addEventListener("message", (event) => {
+      console.log(`Message from server: ${event.data}`);
+    });
+
+    return () => {
+      socket.send("close");
+      socket.close();
+    };
+  });
 
   const test = () =>
     send({ type: "applesauce", card: { suit: "trump", rank: "7" } });

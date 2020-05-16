@@ -1,5 +1,3 @@
-import { Server } from "miragejs";
-
 const LOAD_GAME_URL = "/api/load";
 const PLAY_CARD_URL = "/api/play-card";
 const PICKUP_CARD_URL = "/api/pickup-card";
@@ -8,67 +6,70 @@ const RETURN_TASK_URL = "/api/return-task";
 const DISCARD_CARDS_URL = "/api/discard-cards";
 const API_ERROR_CODE = 1;
 
-const server = new Server();
-server.get(LOAD_GAME_URL, () => {
-  return {
-    playArea: {
-      tasks: [{ rank: "4", suit: "pink" }],
-      cards: [
-        { rank: "4", suit: "pink" },
-        { rank: "5", suit: "yellow" },
-      ],
-    },
-    player: {
-      tasks: [
-        { rank: "7", suit: "pink" },
-        { rank: "2", suit: "yellow" },
-      ],
-      cards: [
-        { rank: "1", suit: "pink" },
-        { rank: "2", suit: "yellow" },
-        { rank: "3", suit: "green" },
-      ],
-    },
-    partner: {
-      tasks: [{ rank: "7", suit: "blue" }],
-      cards: [
-        { rank: "?", suit: "?" },
-        { rank: "?", suit: "?" },
-        { rank: "?", suit: "?" },
-        { rank: "?", suit: "?" },
-      ],
-    },
-    robot: {
-      tasks: [{ rank: "9", suit: "yellow" }],
-      cards: [
-        [
-          { rank: "1", suit: "yellow" },
-          { rank: "2", suit: "blue" },
+if (process.env.MIRAGE) {
+  const { Server } = require("miragejs");
+  const server = new Server();
+  server.get(LOAD_GAME_URL, () => {
+    return {
+      playArea: {
+        tasks: [{ rank: "4", suit: "pink" }],
+        cards: [
+          { rank: "4", suit: "pink" },
+          { rank: "5", suit: "yellow" },
         ],
-        [
-          { rank: "8", suit: "yellow" },
-          { rank: "9", suit: "blue" },
+      },
+      player: {
+        tasks: [
+          { rank: "7", suit: "pink" },
+          { rank: "2", suit: "yellow" },
         ],
+        cards: [
+          { rank: "1", suit: "pink" },
+          { rank: "2", suit: "yellow" },
+          { rank: "3", suit: "green" },
+        ],
+      },
+      partner: {
+        tasks: [{ rank: "7", suit: "blue" }],
+        cards: [
+          { rank: "?", suit: "?" },
+          { rank: "?", suit: "?" },
+          { rank: "?", suit: "?" },
+          { rank: "?", suit: "?" },
+        ],
+      },
+      robot: {
+        tasks: [{ rank: "9", suit: "yellow" }],
+        cards: [
+          [
+            { rank: "1", suit: "yellow" },
+            { rank: "2", suit: "blue" },
+          ],
+          [
+            { rank: "8", suit: "yellow" },
+            { rank: "9", suit: "blue" },
+          ],
+        ],
+      },
+      discardAreaCards: [
+        { rank: "6", suit: "blue" },
+        { rank: "7", suit: "blue" },
       ],
-    },
-    discardAreaCards: [
-      { rank: "6", suit: "blue" },
-      { rank: "7", suit: "blue" },
-    ],
-  };
-});
-server.post(PLAY_CARD_URL, () => {
-  return {};
-});
-server.post(PICKUP_CARD_URL, () => {
-  return {};
-});
-server.post(PICKUP_TASK_URL, () => {
-  return {};
-});
-server.post(RETURN_TASK_URL, () => {
-  return {};
-});
+    };
+  });
+  server.post(PLAY_CARD_URL, () => {
+    return {};
+  });
+  server.post(PICKUP_CARD_URL, () => {
+    return {};
+  });
+  server.post(PICKUP_TASK_URL, () => {
+    return {};
+  });
+  server.post(RETURN_TASK_URL, () => {
+    return {};
+  });
+}
 
 function loadGame() {
   return new Promise((resolve, reject) => {
