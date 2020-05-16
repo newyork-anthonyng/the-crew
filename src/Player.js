@@ -1,57 +1,10 @@
 import React from "react";
-import { Machine, assign } from "xstate";
-import { loadGame } from "./api";
-import { useMachine } from "@xstate/react";
+import { useService } from "@xstate/react";
+import PropTypes from "prop-types";
 
-const machine = Machine(
-  {
-    id: "player",
-    context: {
-      cards: [],
-    },
-    initial: "loading",
-    states: {
-      loading: {
-        invoke: {
-          src: "loadGameState",
-          onDone: {
-            actions: ["cacheGameState"],
-            target: "ready",
-          },
-          onError: {
-            target: "error",
-          },
-        },
-      },
-      ready: {},
-      error: {},
-    },
-  },
-  {
-    services: {
-      loadGameState: loadGame,
-    },
-    actions: {
-      cacheGameState: assign((_, event) => {
-        return {
-          cards: event.data.cards || [],
-        };
-      }),
-    },
-  }
-);
-
-function Player() {
-  const [state] = useMachine(machine);
+function Player({ playerRef }) {
+  const [state] = useService(playerRef);
   const { cards } = state.context;
-
-  if (state.matches("loading")) {
-    return (
-      <div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -71,10 +24,14 @@ function Player() {
       </div>
 
       <div className="mt-8">
-        <pre>{JSON.stringify(state, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
       </div>
     </div>
   );
 }
+
+Player.propTypes = {
+  playerRef: PropTypes.object,
+};
 
 export default Player;

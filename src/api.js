@@ -2,7 +2,11 @@ import { Server } from "miragejs";
 const server = new Server();
 server.get("/api/load", () => {
   return {
-    cards: [
+    playAreaCards: [
+      { rank: "4", suit: "pink" },
+      { rank: "5", suit: "yellow" },
+    ],
+    playerCards: [
       { rank: "1", suit: "pink" },
       { rank: "2", suit: "yellow" },
       { rank: "3", suit: "green" },
