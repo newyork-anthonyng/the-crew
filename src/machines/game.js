@@ -35,6 +35,9 @@ const machine = Machine(
           pickupCard: {
             actions: ["addToPlayer", "notifyPickupCard"],
           },
+          discardCards: {
+            actions: ["addCardsToDiscardArea", "notifyDiscardCards"],
+          },
         },
       },
       error: {},
@@ -71,6 +74,17 @@ const machine = Machine(
         playerMachine.send({
           type: "pickupCard",
           card: event.card,
+        });
+      },
+      addCardsToDiscardArea: (context, event) => {
+        const { discardAreaMachine } = context;
+        const { cards } = event;
+
+        cards.forEach((card) => {
+          discardAreaMachine.send({
+            type: "discardCard",
+            card,
+          });
         });
       },
       notifyPlayCard: (_, event) => {

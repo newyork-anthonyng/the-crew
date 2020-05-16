@@ -16,6 +16,16 @@ const machine = Machine(
           pickupCard: {
             actions: ["removeCard", "parentPickupCard"],
           },
+          discardCards: {
+            actions: ["parentDiscardCards"],
+            target: "discarding",
+          },
+        },
+      },
+      discarding: {
+        onExit: ["removeAllCards"],
+        on: {
+          "": "ready",
         },
       },
     },
@@ -42,9 +52,14 @@ const machine = Machine(
           }),
         };
       }),
-
+      removeAllCards: assign(() => {
+        return { cards: [] };
+      }),
       parentPickupCard: sendParent((_, event) => {
         return { type: "pickupCard", card: event.card };
+      }),
+      parentDiscardCards: sendParent((context) => {
+        return { type: "discardCards", cards: context.cards };
       }),
     },
   }

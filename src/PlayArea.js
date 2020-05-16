@@ -11,8 +11,12 @@ function PlayArea({ playAreaRef }) {
     send({ type: "pickupCard", card });
   };
 
+  const handleDiscardCardClick = () => {
+    send({ type: "discardCards" });
+  };
+
   return (
-    <div>
+    <div className="h-48">
       <h1>Play area</h1>
 
       <div className="flex">
@@ -27,6 +31,10 @@ function PlayArea({ playAreaRef }) {
           );
         })}
       </div>
+
+      <button type="button" onClick={handleDiscardCardClick}>
+        Move play area cards to discard
+      </button>
     </div>
   );
 }
