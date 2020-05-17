@@ -30,6 +30,9 @@ const machine = Machine(
           removeCard: {
             actions: ["removeCard"],
           },
+          "partner.discardCards": {
+            actions: ["partnerDiscardCards"],
+          },
         },
       },
       discarding: {
@@ -60,6 +63,11 @@ const machine = Machine(
 
             return !(isSameRank && isSameSuit);
           }),
+        };
+      }),
+      partnerDiscardCards: assign(() => {
+        return {
+          cards: [],
         };
       }),
       addTask: assign((context, event) => {

@@ -36,6 +36,11 @@ const machine = createMachine({
   notifyPickupCard: () => {
     websocket.send(JSON.stringify({ id: getUserName(), action: "pickupCard" }));
   },
+  notifyDiscardCards: () => {
+    websocket.send(
+      JSON.stringify({ id: getUserName(), action: "discardCards" })
+    );
+  },
 });
 
 function App() {
@@ -64,6 +69,9 @@ function App() {
           break;
         case "partnerPickup":
           send({ type: "partner.pickup", ...parsedMessage });
+          break;
+        case "partnerDiscardCards":
+          send({ type: "partner.discardCards", ...parsedMessage });
           break;
       }
     });

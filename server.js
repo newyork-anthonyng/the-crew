@@ -121,6 +121,23 @@ wss.on("connection", (ws) => {
         }
         break;
       }
+      case "discardCards": {
+        const connectionKeys = Object.keys(connections);
+
+        for (let i = 0; i < connectionKeys.length; i++) {
+          if (parsedMessage.id !== connectionKeys[i]) {
+            connections[connectionKeys[i]].send(
+              JSON.stringify({
+                action: "partnerDiscardCards",
+                cards: [
+                  { rank: "9", suit: "pink" },
+                  { rank: "5", suit: "yellow" },
+                ],
+              })
+            );
+          }
+        }
+      }
     }
   });
 });

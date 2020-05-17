@@ -13,6 +13,9 @@ const machine = Machine(
           discardCard: {
             actions: ["addCard"],
           },
+          "partner.discardCards": {
+            actions: ["partnerDiscardCards"],
+          },
         },
       },
     },
@@ -22,6 +25,16 @@ const machine = Machine(
       addCard: assign((context, event) => {
         const newCards = context.cards.slice();
         newCards.push(event.card);
+
+        return {
+          cards: newCards,
+        };
+      }),
+      partnerDiscardCards: assign((context, event) => {
+        const newCards = context.cards.slice();
+        event.cards.forEach((card) => {
+          newCards.push(card);
+        });
 
         return {
           cards: newCards,

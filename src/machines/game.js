@@ -3,11 +3,10 @@ import playerMachine from "./player";
 import partnerMachine from "./partner";
 import robotMachine from "./robot";
 import playAreaMachine from "./playArea";
-import discardAreaMachine from "./discardAreaMachine";
+import discardAreaMachine from "./discardArea";
 import {
   pickupTask as notifyPickupTask,
   returnTask as notifyReturnTask,
-  discardCards as notifyDiscardCards,
 } from "../api";
 
 const createMachine = ({
@@ -15,6 +14,7 @@ const createMachine = ({
   notifyPlayCard,
   notifyRobotPlayCard,
   notifyPickupCard,
+  notifyDiscardCards,
 }) =>
   Machine(
     {
@@ -61,10 +61,13 @@ const createMachine = ({
               actions: ["playPartnerCard"],
             },
             "partner.robotPlay": {
-              actions: ["addToPlayArea", "playRobotCard"],
+              actions: ["partnerRobotPlays"],
             },
             "partner.pickup": {
-              actions: ["addCardToPartner", "removeCardFromPlayArea"],
+              actions: ["partnerPicksupCard"],
+            },
+            "partner.discardCards": {
+              actions: ["partnerDiscardCards"],
             },
           },
         },
@@ -74,6 +77,16 @@ const createMachine = ({
     {
       actions: {
         loadGame: loadGame,
+        partnerRobotPlays: (context) => {
+          context.playAreaMachine.send({
+            type: "playCard",
+            card: event.card,
+          });
+          context.robotMachine.send({
+            type: "partnerPlayCard",
+            card: event.card,
+          });
+        },
         playPartnerCard: (context, event) => {
           context.playAreaMachine.send({
             type: "playCard",
@@ -88,6 +101,17 @@ const createMachine = ({
           context.robotMachine.send({
             type: "partnerPlayCard",
             card: event.card,
+          });
+        },
+
+        partnerDiscardCards: (context, event) => {
+          context.playAreaMachine.send({
+            type: "partner.discardCards",
+            cards: event.cards,
+          });
+          context.discardAreaMachine.send({
+            type: "partner.discardCards",
+            cards: event.cards,
           });
         },
 
@@ -143,12 +167,10 @@ const createMachine = ({
             });
           });
         },
-        addCardToPartner: (context) => {
+        partnerPicksupCard: (context) => {
           context.partnerMachine.send({
             type: "returnCard",
           });
-        },
-        removeCardFromPlayArea: (context, event) => {
           context.playAreaMachine.send({
             type: "removeCard",
             card: event.card,
