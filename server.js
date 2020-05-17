@@ -8,8 +8,62 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
-    console.log("received", message);
-    ws.send("applesauce");
+    // FUTURE: Why do we need to double-parse??
+    let parsedMessage = JSON.parse(message);
+    parsedMessage = JSON.parse(parsedMessage);
+
+    switch (parsedMessage.action) {
+      case "load":
+        ws.send(
+          JSON.stringify({
+            playArea: {
+              tasks: [{ rank: "4", suit: "pink" }],
+              cards: [
+                { rank: "9", suit: "pink" },
+                { rank: "5", suit: "yellow" },
+              ],
+            },
+            player: {
+              tasks: [
+                { rank: "7", suit: "pink" },
+                { rank: "2", suit: "yellow" },
+              ],
+              cards: [
+                { rank: "1", suit: "pink" },
+                { rank: "2", suit: "yellow" },
+                { rank: "3", suit: "green" },
+              ],
+            },
+            partner: {
+              tasks: [{ rank: "7", suit: "blue" }],
+              cards: [
+                { rank: "?", suit: "?" },
+                { rank: "?", suit: "?" },
+                { rank: "?", suit: "?" },
+                { rank: "?", suit: "?" },
+              ],
+            },
+            robot: {
+              tasks: [{ rank: "9", suit: "yellow" }],
+              cards: [
+                [
+                  { rank: "1", suit: "yellow" },
+                  { rank: "2", suit: "blue" },
+                ],
+                [
+                  { rank: "8", suit: "yellow" },
+                  { rank: "9", suit: "blue" },
+                ],
+              ],
+            },
+            discardAreaCards: [
+              { rank: "6", suit: "blue" },
+              { rank: "7", suit: "blue" },
+            ],
+          })
+        );
+    }
+    // ws.send("applesauce");
   });
 });
 

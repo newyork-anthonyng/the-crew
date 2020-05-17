@@ -6,12 +6,19 @@ import PlayArea from "./components/PlayArea";
 import Robot from "./components/Robot";
 import DiscardArea from "./components/DiscardArea";
 import "./styles.css";
-import machine from "./machines/game";
+import createMachine from "./machines/game";
 import { useMachine } from "@xstate/react";
+import WebSocketWrapper from "./websocketWrapper";
+import setupCookie from "./cookie";
 
-function getWebSocketHost() {
-  return location.origin.replace(/^http/, "ws");
-}
+const websocket = new WebSocketWrapper();
+setupCookie();
+
+const machine = createMachine({
+  loadGame: () => {
+    websocket.send(JSON.stringify({ id: document.cookie, action: "load" }));
+  },
+});
 
 function App() {
   const [state, send] = useMachine(machine);
@@ -24,22 +31,12 @@ function App() {
   } = state.context;
 
   useEffect(() => {
-    const socket = new WebSocket(getWebSocketHost());
-
-    socket.addEventListener("open", function () {
-      socket.send("Hello Server! 💩");
+    websocket.onMessage((message) => {
+      console.group("message listener");
+      console.log(message.data);
+      console.groupEnd("message listener");
+      send({ type: "applesauce", data: JSON.parse(message.data) });
     });
-
-    socket.addEventListener("message", (event) => {
-      console.log(`Message from server: ${event.data}`);
-
-      send({ type: "applesauce", card: { suit: "trump", rank: "7" } });
-    });
-
-    return () => {
-      socket.send("close");
-      socket.close();
-    };
   }, []);
 
   if (state.matches("loading")) {
@@ -60,11 +57,6 @@ function App() {
 
   return (
     <div>
-      {/* <button
-        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Debug: Press button to have Partner play a card
-      </button> */}
       <Player playerRef={playerMachine} />
 
       <PlayArea playAreaRef={playAreaMachine} />

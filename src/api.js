@@ -1,4 +1,3 @@
-const LOAD_GAME_URL = "/api/load";
 const PLAY_CARD_URL = "/api/play-card";
 const PICKUP_CARD_URL = "/api/pickup-card";
 const PICKUP_TASK_URL = "/api/pickup-task";
@@ -9,54 +8,6 @@ const API_ERROR_CODE = 1;
 if (process.env.MIRAGE) {
   const { Server } = require("miragejs");
   const server = new Server();
-  server.get(LOAD_GAME_URL, () => {
-    return {
-      playArea: {
-        tasks: [{ rank: "4", suit: "pink" }],
-        cards: [
-          { rank: "4", suit: "pink" },
-          { rank: "5", suit: "yellow" },
-        ],
-      },
-      player: {
-        tasks: [
-          { rank: "7", suit: "pink" },
-          { rank: "2", suit: "yellow" },
-        ],
-        cards: [
-          { rank: "1", suit: "pink" },
-          { rank: "2", suit: "yellow" },
-          { rank: "3", suit: "green" },
-        ],
-      },
-      partner: {
-        tasks: [{ rank: "7", suit: "blue" }],
-        cards: [
-          { rank: "?", suit: "?" },
-          { rank: "?", suit: "?" },
-          { rank: "?", suit: "?" },
-          { rank: "?", suit: "?" },
-        ],
-      },
-      robot: {
-        tasks: [{ rank: "9", suit: "yellow" }],
-        cards: [
-          [
-            { rank: "1", suit: "yellow" },
-            { rank: "2", suit: "blue" },
-          ],
-          [
-            { rank: "8", suit: "yellow" },
-            { rank: "9", suit: "blue" },
-          ],
-        ],
-      },
-      discardAreaCards: [
-        { rank: "6", suit: "blue" },
-        { rank: "7", suit: "blue" },
-      ],
-    };
-  });
   server.post(PLAY_CARD_URL, () => {
     return {};
   });
@@ -68,24 +19,6 @@ if (process.env.MIRAGE) {
   });
   server.post(RETURN_TASK_URL, () => {
     return {};
-  });
-}
-
-function loadGame() {
-  return new Promise((resolve, reject) => {
-    fetch(LOAD_GAME_URL)
-      .then((response) => {
-        if (!response.ok) {
-          reject({ code: API_ERROR_CODE, message: "Something went wrong" });
-        }
-        return response.json();
-      })
-      .then((response) => {
-        return resolve(response);
-      })
-      .catch((e) => {
-        reject({ code: API_ERROR_CODE, message: e });
-      });
   });
 }
 
@@ -245,7 +178,6 @@ function discardCards() {
 }
 
 export {
-  loadGame,
   playCard,
   robotPlayCard,
   pickupCard,
