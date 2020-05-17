@@ -81,7 +81,7 @@ const createMachine = ({
     {
       actions: {
         loadGame: loadGame,
-        partnerRobotPlays: (context) => {
+        partnerRobotPlays: (context, event) => {
           context.playAreaMachine.send({
             type: "playCard",
             card: event.card,
