@@ -101,6 +101,25 @@ wss.on("connection", (ws) => {
             );
           }
         }
+        break;
+      }
+      case "pickupCard": {
+        const connectionKeys = Object.keys(connections);
+
+        for (let i = 0; i < connectionKeys.length; i++) {
+          if (parsedMessage.id !== connectionKeys[i]) {
+            connections[connectionKeys[i]].send(
+              JSON.stringify({
+                action: "partnerPickup",
+                card: {
+                  rank: "9",
+                  suit: "pink",
+                },
+              })
+            );
+          }
+        }
+        break;
       }
     }
   });

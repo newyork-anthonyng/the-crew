@@ -27,6 +27,9 @@ const machine = Machine(
             actions: ["parentDiscardCards"],
             target: "discarding",
           },
+          removeCard: {
+            actions: ["removeCard"],
+          },
         },
       },
       discarding: {

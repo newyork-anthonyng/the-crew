@@ -14,6 +14,9 @@ const machine = Machine(
           playCard: {
             actions: ["removeCard"],
           },
+          returnCard: {
+            actions: ["addCard"],
+          },
         },
       },
     },
@@ -24,6 +27,13 @@ const machine = Machine(
         const { cards } = context;
         return {
           cards: cards.slice(1),
+        };
+      }),
+      addCard: assign((context) => {
+        const cards = context.cards.slice(0);
+        cards.push({ rank: "?", suit: "?" });
+        return {
+          cards,
         };
       }),
     },

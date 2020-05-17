@@ -27,11 +27,14 @@ const machine = createMachine({
   loadGame: () => {
     websocket.send(JSON.stringify({ id: getUserName(), action: "load" }));
   },
-  playCard: () => {
+  notifyPlayCard: () => {
     websocket.send(JSON.stringify({ id: getUserName(), action: "play" }));
   },
-  robotPlayCard: () => {
+  notifyRobotPlayCard: () => {
     websocket.send(JSON.stringify({ id: getUserName(), action: "robotPlay" }));
+  },
+  notifyPickupCard: () => {
+    websocket.send(JSON.stringify({ id: getUserName(), action: "pickupCard" }));
   },
 });
 
@@ -49,12 +52,19 @@ function App() {
     websocket.onMessage((message) => {
       const parsedMessage = JSON.parse(message.data);
 
-      if (parsedMessage.action === "loadGame") {
-        send({ type: "cacheGameState", ...parsedMessage });
-      } else if (parsedMessage.action === "partnerPlay") {
-        send({ type: "partnerPlay", ...parsedMessage });
-      } else if (parsedMessage.action === "robotPlay") {
-        send({ type: "partnerRobotPlay", ...parsedMessage });
+      switch (parsedMessage.action) {
+        case "loadGame":
+          send({ type: "cacheGameState", ...parsedMessage });
+          break;
+        case "partnerPlay":
+          send({ type: "partner.play", ...parsedMessage });
+          break;
+        case "robotPlay":
+          send({ type: "partner.robotPlay", ...parsedMessage });
+          break;
+        case "partnerPickup":
+          send({ type: "partner.pickup", ...parsedMessage });
+          break;
       }
     });
   }, []);

@@ -5,13 +5,17 @@ import robotMachine from "./robot";
 import playAreaMachine from "./playArea";
 import discardAreaMachine from "./discardAreaMachine";
 import {
-  pickupCard as notifyPickupCard,
   pickupTask as notifyPickupTask,
   returnTask as notifyReturnTask,
   discardCards as notifyDiscardCards,
 } from "../api";
 
-const createMachine = ({ loadGame, playCard, robotPlayCard }) =>
+const createMachine = ({
+  loadGame,
+  notifyPlayCard,
+  notifyRobotPlayCard,
+  notifyPickupCard,
+}) =>
   Machine(
     {
       id: "game",
@@ -53,11 +57,14 @@ const createMachine = ({ loadGame, playCard, robotPlayCard }) =>
             discardCards: {
               actions: ["addCardsToDiscardArea", "notifyDiscardCards"],
             },
-            partnerPlay: {
+            "partner.play": {
               actions: ["playPartnerCard"],
             },
-            partnerRobotPlay: {
+            "partner.robotPlay": {
               actions: ["addToPlayArea", "playRobotCard"],
+            },
+            "partner.pickup": {
+              actions: ["addCardToPartner", "removeCardFromPlayArea"],
             },
           },
         },
@@ -136,11 +143,22 @@ const createMachine = ({ loadGame, playCard, robotPlayCard }) =>
             });
           });
         },
+        addCardToPartner: (context) => {
+          context.partnerMachine.send({
+            type: "returnCard",
+          });
+        },
+        removeCardFromPlayArea: (context, event) => {
+          context.playAreaMachine.send({
+            type: "removeCard",
+            card: event.card,
+          });
+        },
         notifyPlayCard: (_, event) => {
-          playCard(event.card);
+          notifyPlayCard(event.card);
         },
         notifyRobotPlayCard: (_, event) => {
-          robotPlayCard(event.card);
+          notifyRobotPlayCard(event.card);
         },
         notifyPickupCard: (_, event) => {
           notifyPickupCard(event.card);
