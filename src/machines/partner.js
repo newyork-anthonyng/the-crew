@@ -17,6 +17,9 @@ const machine = Machine(
           returnCard: {
             actions: ["addCard"],
           },
+          pickupTask: {
+            actions: ["addTask"],
+          },
         },
       },
     },
@@ -34,6 +37,14 @@ const machine = Machine(
         cards.push({ rank: "?", suit: "?" });
         return {
           cards,
+        };
+      }),
+      addTask: assign((context, event) => {
+        const newTasks = context.tasks.slice();
+        newTasks.push(event.task);
+
+        return {
+          tasks: newTasks,
         };
       }),
     },

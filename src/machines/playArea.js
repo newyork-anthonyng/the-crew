@@ -33,6 +33,9 @@ const machine = Machine(
           "partner.discardCards": {
             actions: ["partnerDiscardCards"],
           },
+          "partner.pickupTask": {
+            actions: ["partnerPickupTask"],
+          },
         },
       },
       discarding: {
@@ -68,6 +71,18 @@ const machine = Machine(
       partnerDiscardCards: assign(() => {
         return {
           cards: [],
+        };
+      }),
+      partnerPickupTask: assign((context, event) => {
+        const { task: selectedTask } = event;
+
+        return {
+          tasks: context.tasks.filter((task) => {
+            const isSameRank = task.rank === selectedTask.rank;
+            const isSameSuit = task.suit === selectedTask.suit;
+
+            return !(isSameRank && isSameSuit);
+          }),
         };
       }),
       addTask: assign((context, event) => {

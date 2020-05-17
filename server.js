@@ -68,79 +68,88 @@ wss.on("connection", (ws) => {
         );
         break;
       case "play": {
-        const connectionKeys = Object.keys(connections);
-
-        for (let i = 0; i < connectionKeys.length; i++) {
-          if (parsedMessage.id !== connectionKeys[i]) {
-            connections[connectionKeys[i]].send(
-              JSON.stringify({
-                action: "partnerPlay",
-                card: {
-                  rank: "42",
-                  suit: "blue",
-                },
-              })
-            );
-          }
-        }
+        getOtherConnection(parsedMessage.id).forEach((connection) => {
+          connection.send(
+            JSON.stringify({
+              action: "partnerPlay",
+              card: {
+                rank: "42",
+                suit: "blue",
+              },
+            })
+          );
+        });
         break;
       }
       case "robotPlay": {
-        const connectionKeys = Object.keys(connections);
-
-        for (let i = 0; i < connectionKeys.length; i++) {
-          if (parsedMessage.id !== connectionKeys[i]) {
-            connections[connectionKeys[i]].send(
-              JSON.stringify({
-                action: "robotPlay",
-                card: {
-                  rank: "1",
-                  suit: "yellow",
-                },
-              })
-            );
-          }
-        }
+        getOtherConnection(parsedMessage.id).forEach((connection) => {
+          connection.send(
+            JSON.stringify({
+              action: "robotPlay",
+              card: {
+                rank: "1",
+                suit: "yellow",
+              },
+            })
+          );
+        });
         break;
       }
       case "pickupCard": {
-        const connectionKeys = Object.keys(connections);
-
-        for (let i = 0; i < connectionKeys.length; i++) {
-          if (parsedMessage.id !== connectionKeys[i]) {
-            connections[connectionKeys[i]].send(
-              JSON.stringify({
-                action: "partnerPickup",
-                card: {
-                  rank: "9",
-                  suit: "pink",
-                },
-              })
-            );
-          }
-        }
+        getOtherConnection(parsedMessage.id).forEach((connection) => {
+          connection.send(
+            JSON.stringify({
+              action: "partnerPickup",
+              card: {
+                rank: "9",
+                suit: "pink",
+              },
+            })
+          );
+        });
         break;
       }
       case "discardCards": {
-        const connectionKeys = Object.keys(connections);
+        getOtherConnection(parsedMessage.id).forEach((connection) => {
+          connection.send(
+            JSON.stringify({
+              action: "partnerDiscardCards",
+              cards: [
+                { rank: "9", suit: "pink" },
+                { rank: "5", suit: "yellow" },
+              ],
+            })
+          );
+        });
+        break;
+      }
 
-        for (let i = 0; i < connectionKeys.length; i++) {
-          if (parsedMessage.id !== connectionKeys[i]) {
-            connections[connectionKeys[i]].send(
-              JSON.stringify({
-                action: "partnerDiscardCards",
-                cards: [
-                  { rank: "9", suit: "pink" },
-                  { rank: "5", suit: "yellow" },
-                ],
-              })
-            );
-          }
-        }
+      case "pickupTask": {
+        getOtherConnection(parsedMessage.id).forEach((connection) => {
+          connection.send(
+            JSON.stringify({
+              action: "partnerPickupTask",
+              task: { rank: "4", suit: "orange" },
+            })
+          );
+        });
       }
     }
   });
 });
+
+function getOtherConnection(id) {
+  const connectionKeys = Object.keys(connections);
+
+  const result = [];
+  for (let i = 0; i < connectionKeys.length; i++) {
+    if (id !== connectionKeys[i]) {
+      result.push(connections[connectionKeys[i]]);
+    }
+  }
+
+  return result;
+}
 
 if (process.env.DEV_SERVER) {
   const webpack = require("webpack");
@@ -165,54 +174,6 @@ if (process.env.DEV_SERVER) {
 }
 
 app.use(`/`, express.static(path.resolve(__dirname, "dist")));
-app.get("/api/load", (request, response) => {
-  response.json({
-    playArea: {
-      tasks: [{ rank: "4", suit: "pink" }],
-      cards: [
-        { rank: "9", suit: "pink" },
-        { rank: "5", suit: "yellow" },
-      ],
-    },
-    player: {
-      tasks: [
-        { rank: "7", suit: "pink" },
-        { rank: "2", suit: "yellow" },
-      ],
-      cards: [
-        { rank: "1", suit: "pink" },
-        { rank: "2", suit: "yellow" },
-        { rank: "3", suit: "green" },
-      ],
-    },
-    partner: {
-      tasks: [{ rank: "7", suit: "blue" }],
-      cards: [
-        { rank: "?", suit: "?" },
-        { rank: "?", suit: "?" },
-        { rank: "?", suit: "?" },
-        { rank: "?", suit: "?" },
-      ],
-    },
-    robot: {
-      tasks: [{ rank: "9", suit: "yellow" }],
-      cards: [
-        [
-          { rank: "1", suit: "yellow" },
-          { rank: "2", suit: "blue" },
-        ],
-        [
-          { rank: "8", suit: "yellow" },
-          { rank: "9", suit: "blue" },
-        ],
-      ],
-    },
-    discardAreaCards: [
-      { rank: "6", suit: "blue" },
-      { rank: "7", suit: "blue" },
-    ],
-  });
-});
 
 server.listen(process.env.PORT || 3000, () => {
   console.log(`Server listening on ${server.address().port}`);
