@@ -9,7 +9,6 @@ function WebSocketWrapper() {
       "%cConnected to web socket",
       "background-color: orange; color: white;"
     );
-
     isSocketOpen = true;
     if (isSocketOpen && isEventListenerAdded) {
       processSendQueue();
@@ -18,23 +17,27 @@ function WebSocketWrapper() {
 
   function onMessage(cb) {
     isEventListenerAdded = true;
+
     socket.addEventListener("message", cb);
     if (isSocketOpen && isEventListenerAdded) {
       processSendQueue();
     }
   }
 
+  const sendQueue = [];
   const processSendQueue = () => {
-    this.send = send;
     sendQueue.forEach((sendItem) => {
-      this.send(sendItem);
+      send(sendItem);
     });
   };
 
-  const sendQueue = [];
-  function notLoadedSend(message) {
-    sendQueue.push(message);
-  }
+  const applesauce = (message) => {
+    if (isSocketOpen) {
+      send(message);
+    } else {
+      sendQueue.push(message);
+    }
+  };
 
   function send(message) {
     console.log(
@@ -45,7 +48,7 @@ function WebSocketWrapper() {
   }
 
   return {
-    send: notLoadedSend,
+    send: applesauce,
     onMessage: onMessage,
   };
 }

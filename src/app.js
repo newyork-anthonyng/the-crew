@@ -14,9 +14,25 @@ import setupCookie from "./cookie";
 const websocket = new WebSocketWrapper();
 setupCookie();
 
+function getUserName() {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    if (cookies[i].startsWith("name=")) {
+      return cookies[i].split("=")[1];
+    }
+  }
+}
+
 const machine = createMachine({
   loadGame: () => {
-    websocket.send(JSON.stringify({ id: document.cookie, action: "load" }));
+    console.log("loadGame");
+    console.log(websocket.send);
+    websocket.send(JSON.stringify({ id: getUserName(), action: "load" }));
+  },
+  playCard: () => {
+    console.log("playCard");
+    console.log(websocket.send);
+    websocket.send(JSON.stringify({ id: getUserName(), action: "play" }));
   },
 });
 
@@ -35,7 +51,13 @@ function App() {
       console.group("message listener");
       console.log(message.data);
       console.groupEnd("message listener");
-      send({ type: "applesauce", data: JSON.parse(message.data) });
+      const parsedMessage = JSON.parse(message.data);
+
+      if (parsedMessage.action === "loadGame") {
+        send({ type: "cacheGameState", data: parsedMessage });
+      } else if (parsedMessage.action === "partnerPlay") {
+        send({ type: "partnerPlay", data: parsedMessage });
+      }
     });
   }, []);
 

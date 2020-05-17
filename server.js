@@ -6,18 +6,22 @@ const http = require("http");
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+const connections = {};
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
     // FUTURE: Why do we need to double-parse??
     let parsedMessage = JSON.parse(message);
     parsedMessage = JSON.parse(parsedMessage);
 
+    console.log("received message", parsedMessage);
     switch (parsedMessage.action) {
       case "load":
+        connections[parsedMessage.id] = ws;
         ws.send(
           JSON.stringify({
+            action: "loadGame",
             playArea: {
-              tasks: [{ rank: "4", suit: "pink" }],
+              tasks: [{ rank: "4", suit: "orange" }],
               cards: [
                 { rank: "9", suit: "pink" },
                 { rank: "5", suit: "yellow" },
@@ -62,8 +66,26 @@ wss.on("connection", (ws) => {
             ],
           })
         );
+        break;
+      case "play": {
+        const connectionKeys = Object.keys(connections);
+
+        for (let i = 0; i < connectionKeys.length; i++) {
+          if (parsedMessage.id !== connectionKeys[i]) {
+            connections[connectionKeys[i]].send(
+              JSON.stringify({
+                action: "partnerPlay",
+                card: {
+                  rank: "42",
+                  suit: "blue",
+                },
+              })
+            );
+          }
+        }
+        break;
+      }
     }
-    // ws.send("applesauce");
   });
 });
 

@@ -5,7 +5,7 @@ import robotMachine from "./robot";
 import playAreaMachine from "./playArea";
 import discardAreaMachine from "./discardAreaMachine";
 import {
-  playCard as notifyPlayCard,
+  // playCard as notifyPlayCard,
   robotPlayCard as notifyRobotPlayCard,
   pickupCard as notifyPickupCard,
   pickupTask as notifyPickupTask,
@@ -13,7 +13,7 @@ import {
   discardCards as notifyDiscardCards,
 } from "../api";
 
-const createMachine = ({ loadGame }) =>
+const createMachine = ({ loadGame, playCard }) =>
   Machine(
     {
       id: "game",
@@ -29,7 +29,7 @@ const createMachine = ({ loadGame }) =>
         loading: {
           entry: "loadGame",
           on: {
-            applesauce: {
+            cacheGameState: {
               actions: ["cacheGameState"],
               target: "ready",
             },
@@ -55,19 +55,8 @@ const createMachine = ({ loadGame }) =>
             discardCards: {
               actions: ["addCardsToDiscardArea", "notifyDiscardCards"],
             },
-            applesauce: {
-              actions: [
-                (context, event) => {
-                  // @FUTURE: This tests that partner can play a card
-                  context.playAreaMachine.send({
-                    type: "playCard",
-                    card: event.card,
-                  });
-                  context.partnerMachine.send({
-                    type: "playCard",
-                  });
-                },
-              ],
+            partnerPlay: {
+              actions: ["playPartnerCard"],
             },
           },
         },
@@ -77,6 +66,16 @@ const createMachine = ({ loadGame }) =>
     {
       actions: {
         loadGame: loadGame,
+        playPartnerCard: (context, event) => {
+          context.playAreaMachine.send({
+            type: "playCard",
+            card: event.data.card,
+          });
+          context.partnerMachine.send({
+            type: "playCard",
+          });
+        },
+
         cacheGameState: assign((_, event) => {
           const {
             player,
@@ -136,7 +135,7 @@ const createMachine = ({ loadGame }) =>
           });
         },
         notifyPlayCard: (_, event) => {
-          notifyPlayCard(event.card);
+          playCard(event.card);
         },
         notifyRobotPlayCard: (_, event) => {
           notifyRobotPlayCard(event.card);
