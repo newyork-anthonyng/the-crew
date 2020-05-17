@@ -44,6 +44,9 @@ const machine = createMachine({
   notifyPickupTask: () => {
     websocket.send(JSON.stringify({ id: getUserName(), action: "pickupTask" }));
   },
+  notifyReturnTask: () => {
+    websocket.send(JSON.stringify({ id: getUserName(), action: "returnTask" }));
+  },
 });
 
 function App() {
@@ -78,6 +81,9 @@ function App() {
           break;
         case "partnerPickupTask":
           send({ type: "partner.pickupTask", ...parsedMessage });
+          break;
+        case "partnerReturnTask":
+          send({ type: "partner.returnTask", ...parsedMessage });
           break;
       }
     });

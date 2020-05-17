@@ -4,7 +4,6 @@ import partnerMachine from "./partner";
 import robotMachine from "./robot";
 import playAreaMachine from "./playArea";
 import discardAreaMachine from "./discardArea";
-import { returnTask as notifyReturnTask } from "../api";
 
 const createMachine = ({
   loadGame,
@@ -13,6 +12,7 @@ const createMachine = ({
   notifyPickupCard,
   notifyDiscardCards,
   notifyPickupTask,
+  notifyReturnTask,
 }) =>
   Machine(
     {
@@ -70,6 +70,9 @@ const createMachine = ({
             "partner.pickupTask": {
               actions: ["partnerPickupTask"],
             },
+            "partner.returnTask": {
+              actions: ["partnerReturnTask"],
+            },
           },
         },
         error: {},
@@ -123,6 +126,17 @@ const createMachine = ({
           });
           context.playAreaMachine.send({
             type: "partner.pickupTask",
+            task: event.task,
+          });
+        },
+
+        partnerReturnTask: (context, event) => {
+          context.partnerMachine.send({
+            type: "returnTask",
+            task: event.task,
+          });
+          context.playAreaMachine.send({
+            type: "partner.returnTask",
             task: event.task,
           });
         },

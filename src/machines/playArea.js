@@ -36,6 +36,9 @@ const machine = Machine(
           "partner.pickupTask": {
             actions: ["partnerPickupTask"],
           },
+          "partner.returnTask": {
+            actions: ["partnerReturnTask"],
+          },
         },
       },
       discarding: {
@@ -83,6 +86,14 @@ const machine = Machine(
 
             return !(isSameRank && isSameSuit);
           }),
+        };
+      }),
+      partnerReturnTask: assign((context, event) => {
+        const newTasks = context.tasks.slice();
+        newTasks.push(event.task);
+
+        return {
+          tasks: newTasks,
         };
       }),
       addTask: assign((context, event) => {

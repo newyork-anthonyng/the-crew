@@ -20,6 +20,9 @@ const machine = Machine(
           pickupTask: {
             actions: ["addTask"],
           },
+          returnTask: {
+            actions: ["returnTask"],
+          },
         },
       },
     },
@@ -45,6 +48,18 @@ const machine = Machine(
 
         return {
           tasks: newTasks,
+        };
+      }),
+      returnTask: assign((context, event) => {
+        const { task: selectedTask } = event;
+
+        return {
+          tasks: context.tasks.filter((task) => {
+            const isSameRank = task.rank === selectedTask.rank;
+            const isSameSuit = task.suit === selectedTask.suit;
+
+            return !(isSameRank && isSameSuit);
+          }),
         };
       }),
     },

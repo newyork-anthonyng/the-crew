@@ -123,7 +123,6 @@ wss.on("connection", (ws) => {
         });
         break;
       }
-
       case "pickupTask": {
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
@@ -133,6 +132,18 @@ wss.on("connection", (ws) => {
             })
           );
         });
+        break;
+      }
+      case "returnTask": {
+        getOtherConnection(parsedMessage.id).forEach((connection) => {
+          connection.send(
+            JSON.stringify({
+              action: "partnerReturnTask",
+              task: { rank: "7", suit: "blue" },
+            })
+          );
+        });
+        break;
       }
     }
   });
