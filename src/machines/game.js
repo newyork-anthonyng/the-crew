@@ -5,15 +5,13 @@ import robotMachine from "./robot";
 import playAreaMachine from "./playArea";
 import discardAreaMachine from "./discardAreaMachine";
 import {
-  // playCard as notifyPlayCard,
-  robotPlayCard as notifyRobotPlayCard,
   pickupCard as notifyPickupCard,
   pickupTask as notifyPickupTask,
   returnTask as notifyReturnTask,
   discardCards as notifyDiscardCards,
 } from "../api";
 
-const createMachine = ({ loadGame, playCard }) =>
+const createMachine = ({ loadGame, playCard, robotPlayCard }) =>
   Machine(
     {
       id: "game",
@@ -58,6 +56,9 @@ const createMachine = ({ loadGame, playCard }) =>
             partnerPlay: {
               actions: ["playPartnerCard"],
             },
+            partnerRobotPlay: {
+              actions: ["addToPlayArea", "playRobotCard"],
+            },
           },
         },
         error: {},
@@ -69,21 +70,22 @@ const createMachine = ({ loadGame, playCard }) =>
         playPartnerCard: (context, event) => {
           context.playAreaMachine.send({
             type: "playCard",
-            card: event.data.card,
+            card: event.card,
           });
           context.partnerMachine.send({
             type: "playCard",
           });
         },
 
+        playRobotCard: (context, event) => {
+          context.robotMachine.send({
+            type: "partnerPlayCard",
+            card: event.card,
+          });
+        },
+
         cacheGameState: assign((_, event) => {
-          const {
-            player,
-            partner,
-            robot,
-            playArea,
-            discardAreaCards,
-          } = event.data;
+          const { player, partner, robot, playArea, discardAreaCards } = event;
 
           return {
             playerMachine: spawn(playerMachine.withContext(player)),
@@ -138,7 +140,7 @@ const createMachine = ({ loadGame, playCard }) =>
           playCard(event.card);
         },
         notifyRobotPlayCard: (_, event) => {
-          notifyRobotPlayCard(event.card);
+          robotPlayCard(event.card);
         },
         notifyPickupCard: (_, event) => {
           notifyPickupCard(event.card);

@@ -25,14 +25,13 @@ function getUserName() {
 
 const machine = createMachine({
   loadGame: () => {
-    console.log("loadGame");
-    console.log(websocket.send);
     websocket.send(JSON.stringify({ id: getUserName(), action: "load" }));
   },
   playCard: () => {
-    console.log("playCard");
-    console.log(websocket.send);
     websocket.send(JSON.stringify({ id: getUserName(), action: "play" }));
+  },
+  robotPlayCard: () => {
+    websocket.send(JSON.stringify({ id: getUserName(), action: "robotPlay" }));
   },
 });
 
@@ -48,15 +47,14 @@ function App() {
 
   useEffect(() => {
     websocket.onMessage((message) => {
-      console.group("message listener");
-      console.log(message.data);
-      console.groupEnd("message listener");
       const parsedMessage = JSON.parse(message.data);
 
       if (parsedMessage.action === "loadGame") {
-        send({ type: "cacheGameState", data: parsedMessage });
+        send({ type: "cacheGameState", ...parsedMessage });
       } else if (parsedMessage.action === "partnerPlay") {
-        send({ type: "partnerPlay", data: parsedMessage });
+        send({ type: "partnerPlay", ...parsedMessage });
+      } else if (parsedMessage.action === "robotPlay") {
+        send({ type: "partnerRobotPlay", ...parsedMessage });
       }
     });
   }, []);

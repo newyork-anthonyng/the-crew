@@ -14,6 +14,9 @@ const machine = Machine(
           playCard: {
             actions: ["removeCard", "parentPlayCard"],
           },
+          partnerPlayCard: {
+            actions: ["removeCard"],
+          },
         },
       },
     },

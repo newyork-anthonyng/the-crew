@@ -85,6 +85,23 @@ wss.on("connection", (ws) => {
         }
         break;
       }
+      case "robotPlay": {
+        const connectionKeys = Object.keys(connections);
+
+        for (let i = 0; i < connectionKeys.length; i++) {
+          if (parsedMessage.id !== connectionKeys[i]) {
+            connections[connectionKeys[i]].send(
+              JSON.stringify({
+                action: "robotPlay",
+                card: {
+                  rank: "1",
+                  suit: "yellow",
+                },
+              })
+            );
+          }
+        }
+      }
     }
   });
 });
