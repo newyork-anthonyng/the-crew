@@ -30,11 +30,11 @@ const machine = createMachine({
   notifyDiscardCards: () => {
     websocket.send({ action: "discardCards" });
   },
-  notifyPickupTask: () => {
-    websocket.send({ action: "pickupTask" });
+  notifyPickupTask: (task) => {
+    websocket.send({ action: "pickupTask", task });
   },
-  notifyReturnTask: () => {
-    websocket.send({ action: "returnTask" });
+  notifyReturnTask: (task) => {
+    websocket.send({ action: "returnTask", task });
   },
 });
 

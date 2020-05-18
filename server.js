@@ -98,22 +98,34 @@ wss.on("connection", (ws) => {
         break;
       }
       case "pickupTask": {
+        if (isPerson1) {
+          game.player1PicksTask(parsedMessage.task);
+        } else {
+          game.player2PicksTask(parsedMessage.task);
+        }
+
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
             JSON.stringify({
               action: "partnerPickupTask",
-              task: { rank: "4", suit: "orange" },
+              task: parsedMessage.task,
             })
           );
         });
         break;
       }
       case "returnTask": {
+        if (isPerson1) {
+          game.player1ReturnsTask(parsedMessage.task);
+        } else {
+          game.player2ReturnsTask(parsedMessage.task);
+        }
+
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
             JSON.stringify({
               action: "partnerReturnTask",
-              task: { rank: "7", suit: "blue" },
+              task: parsedMessage.task,
             })
           );
         });

@@ -135,9 +135,9 @@ function Game() {
     });
   }
 
-  function addCard(selectedCard, player) {
+  function addCard(card, player) {
     const newCards = player.cards.slice();
-    newCards.push(selectedCard);
+    newCards.push(card);
     player.cards = newCards;
   }
 
@@ -174,6 +174,43 @@ function Game() {
     return discardedCards;
   }
 
+  function player1PicksTask(task) {
+    addTask(task, player1);
+
+    removeTask(task, playArea);
+  }
+
+  function player2PicksTask(task) {
+    addTask(task, player2);
+
+    removeTask(task, playArea);
+  }
+
+  function addTask(task, player) {
+    const newTasks = player.tasks.slice();
+    newTasks.push(task);
+    player.tasks = newTasks;
+  }
+
+  function removeTask(selectedTask, player) {
+    player.tasks = player.tasks.filter((task) => {
+      const isSameSuit = task.suit === selectedTask.suit;
+      const isSameRank = task.rank === selectedTask.rank;
+
+      return !(isSameSuit && isSameRank);
+    });
+  }
+
+  function player1ReturnsTask(task) {
+    removeTask(task, player1);
+    addTask(task, playArea);
+  }
+
+  function player2ReturnsTask(task) {
+    removeTask(task, player2);
+    addTask(task, playArea);
+  }
+
   return {
     createNewGame,
     getPerson1State,
@@ -184,6 +221,10 @@ function Game() {
     player1Returns,
     player2Returns,
     discardCards,
+    player1PicksTask,
+    player2PicksTask,
+    player1ReturnsTask,
+    player2ReturnsTask,
   };
 }
 
