@@ -166,6 +166,14 @@ function Game() {
     removeCard(card, playArea);
   }
 
+  function discardCards() {
+    const discardedCards = playArea.cards.slice();
+    discardArea = discardedCards;
+    playArea.cards = [];
+
+    return discardedCards;
+  }
+
   return {
     createNewGame,
     getPerson1State,
@@ -175,6 +183,7 @@ function Game() {
     robotPlays,
     player1Returns,
     player2Returns,
+    discardCards,
   };
 }
 

@@ -85,14 +85,13 @@ wss.on("connection", (ws) => {
         break;
       }
       case "discardCards": {
+        const discardedCards = game.discardCards();
+
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
             JSON.stringify({
               action: "partnerDiscardCards",
-              cards: [
-                { rank: "9", suit: "pink" },
-                { rank: "5", suit: "yellow" },
-              ],
+              cards: discardedCards,
             })
           );
         });
