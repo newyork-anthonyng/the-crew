@@ -193,7 +193,7 @@ const createMachine = ({
             });
           });
         },
-        partnerPicksupCard: (context) => {
+        partnerPicksupCard: (context, event) => {
           context.partnerMachine.send({
             type: "returnCard",
           });

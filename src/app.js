@@ -24,8 +24,8 @@ const machine = createMachine({
   notifyRobotPlayCard: (card) => {
     websocket.send({ action: "robotPlay", card });
   },
-  notifyPickupCard: () => {
-    websocket.send({ action: "pickupCard" });
+  notifyPickupCard: (card) => {
+    websocket.send({ action: "pickupCard", card });
   },
   notifyDiscardCards: () => {
     websocket.send({ action: "discardCards" });

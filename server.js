@@ -17,13 +17,14 @@ wss.on("connection", (ws) => {
   ws.on("message", (message) => {
     const parsedMessage = JSON.parse(message);
     console.log(parsedMessage);
+    const isPerson1 = parsedMessage.id === process.env.person1;
 
     switch (parsedMessage.action) {
       case "load": {
         connections[parsedMessage.id] = ws;
 
         let state;
-        if (parsedMessage.id === process.env.person1) {
+        if (isPerson1) {
           state = game.getPerson1State();
         } else {
           state = game.getPerson2State();
@@ -37,7 +38,7 @@ wss.on("connection", (ws) => {
         break;
       }
       case "play": {
-        if (parsedMessage.id === process.env.person1) {
+        if (isPerson1) {
           game.player1Plays(parsedMessage.card);
         } else {
           game.player2Plays(parsedMessage.card);
@@ -67,14 +68,17 @@ wss.on("connection", (ws) => {
         break;
       }
       case "pickupCard": {
+        if (isPerson1) {
+          game.player1Returns(parsedMessage.card);
+        } else {
+          game.player2Returns(parsedMessage.card);
+        }
+
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
             JSON.stringify({
               action: "partnerPickup",
-              card: {
-                rank: "9",
-                suit: "pink",
-              },
+              card: parsedMessage.card,
             })
           );
         });

@@ -118,10 +118,12 @@ function Game() {
 
   function player1Plays(card) {
     removeCard(card, player1);
+    addCard(card, playArea);
   }
 
   function player2Plays(card) {
     removeCard(card, player2);
+    addCard(card, playArea);
   }
 
   function removeCard(selectedCard, player) {
@@ -131,10 +133,12 @@ function Game() {
 
       return !(isSameSuit && isSameRank);
     });
+  }
 
-    const newPlayerAreaCards = playArea.cards.slice();
-    newPlayerAreaCards.push(selectedCard);
-    playArea.cards = newPlayerAreaCards;
+  function addCard(selectedCard, player) {
+    const newCards = player.cards.slice();
+    newCards.push(selectedCard);
+    player.cards = newCards;
   }
 
   function robotPlays(selectedCard) {
@@ -150,6 +154,18 @@ function Game() {
     playArea.cards = newPlayerAreaCards;
   }
 
+  function player1Returns(card) {
+    addCard(card, player1);
+
+    removeCard(card, playArea);
+  }
+
+  function player2Returns(card) {
+    addCard(card, player1);
+
+    removeCard(card, playArea);
+  }
+
   return {
     createNewGame,
     getPerson1State,
@@ -157,6 +173,8 @@ function Game() {
     player1Plays,
     player2Plays,
     robotPlays,
+    player1Returns,
+    player2Returns,
   };
 }
 
