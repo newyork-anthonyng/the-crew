@@ -18,11 +18,11 @@ const machine = createMachine({
   loadGame: () => {
     websocket.send({ action: "load" });
   },
-  notifyPlayCard: (event) => {
-    websocket.send({ action: "play", card: event });
+  notifyPlayCard: (card) => {
+    websocket.send({ action: "play", card });
   },
-  notifyRobotPlayCard: () => {
-    websocket.send({ action: "robotPlay" });
+  notifyRobotPlayCard: (card) => {
+    websocket.send({ action: "robotPlay", card });
   },
   notifyPickupCard: () => {
     websocket.send({ action: "pickupCard" });

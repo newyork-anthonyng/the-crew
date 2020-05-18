@@ -54,14 +54,13 @@ wss.on("connection", (ws) => {
         break;
       }
       case "robotPlay": {
+        game.robotPlays(parsedMessage.card);
+
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
             JSON.stringify({
               action: "robotPlay",
-              card: {
-                rank: "1",
-                suit: "yellow",
-              },
+              card: parsedMessage.card,
             })
           );
         });
