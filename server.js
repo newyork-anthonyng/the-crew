@@ -3,10 +3,15 @@ const express = require("express");
 const app = express();
 const WebSocket = require("ws");
 const http = require("http");
+const Game = require("./src/gameLogic");
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 const connections = {};
+
+const game = new Game();
+game.createNewGame();
+
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
     const parsedMessage = JSON.parse(message);
@@ -18,50 +23,7 @@ wss.on("connection", (ws) => {
         ws.send(
           JSON.stringify({
             action: "loadGame",
-            playArea: {
-              tasks: [{ rank: "4", suit: "orange" }],
-              cards: [
-                { rank: "9", suit: "pink" },
-                { rank: "5", suit: "yellow" },
-              ],
-            },
-            player: {
-              tasks: [
-                { rank: "7", suit: "pink" },
-                { rank: "2", suit: "yellow" },
-              ],
-              cards: [
-                { rank: "1", suit: "pink" },
-                { rank: "2", suit: "yellow" },
-                { rank: "3", suit: "green" },
-              ],
-            },
-            partner: {
-              tasks: [{ rank: "7", suit: "blue" }],
-              cards: [
-                { rank: "?", suit: "?" },
-                { rank: "?", suit: "?" },
-                { rank: "?", suit: "?" },
-                { rank: "?", suit: "?" },
-              ],
-            },
-            robot: {
-              tasks: [{ rank: "9", suit: "yellow" }],
-              cards: [
-                [
-                  { rank: "1", suit: "yellow" },
-                  { rank: "2", suit: "blue" },
-                ],
-                [
-                  { rank: "8", suit: "yellow" },
-                  { rank: "9", suit: "blue" },
-                ],
-              ],
-            },
-            discardAreaCards: [
-              { rank: "6", suit: "blue" },
-              { rank: "7", suit: "blue" },
-            ],
+            ...game.state(),
           })
         );
         break;

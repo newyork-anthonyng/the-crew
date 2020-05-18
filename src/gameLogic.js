@@ -3,6 +3,8 @@ function Game() {
   let robotCards = [];
   let player1 = [];
   let player2 = [];
+  let playArea = [];
+  let discardArea = [];
 
   function createNewGame() {
     const suits = ["yellow", "pink", "blue", "green"];
@@ -58,8 +60,34 @@ function Game() {
     return array;
   }
 
+  function state() {
+    return {
+      playArea: {
+        tasks: [{ rank: "9", suit: "orange" }],
+        cards: playArea,
+      },
+      player: {
+        tasks: [
+          { rank: "7", suit: "pink" },
+          { rank: "2", suit: "yellow" },
+        ],
+        cards: player1,
+      },
+      partner: {
+        tasks: [{ rank: "7", suit: "blue" }],
+        cards: player2,
+      },
+      robot: {
+        tasks: [{ rank: "9", suit: "yellow" }],
+        cards: robotCards,
+      },
+      discardAreaCards: discardArea,
+    };
+  }
+
   return {
     createNewGame,
+    state,
   };
 }
 
