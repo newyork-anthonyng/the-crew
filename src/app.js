@@ -14,38 +14,27 @@ import setupCookie from "./cookie";
 const websocket = new WebSocketWrapper();
 setupCookie();
 
-function getUserName() {
-  const cookies = document.cookie.split(";");
-  for (let i = 0; i < cookies.length; i++) {
-    if (cookies[i].startsWith("name=")) {
-      return cookies[i].split("=")[1];
-    }
-  }
-}
-
 const machine = createMachine({
   loadGame: () => {
-    websocket.send(JSON.stringify({ id: getUserName(), action: "load" }));
+    websocket.send({ action: "load" });
   },
   notifyPlayCard: () => {
-    websocket.send(JSON.stringify({ id: getUserName(), action: "play" }));
+    websocket.send({ action: "play" });
   },
   notifyRobotPlayCard: () => {
-    websocket.send(JSON.stringify({ id: getUserName(), action: "robotPlay" }));
+    websocket.send({ action: "robotPlay" });
   },
   notifyPickupCard: () => {
-    websocket.send(JSON.stringify({ id: getUserName(), action: "pickupCard" }));
+    websocket.send({ action: "pickupCard" });
   },
   notifyDiscardCards: () => {
-    websocket.send(
-      JSON.stringify({ id: getUserName(), action: "discardCards" })
-    );
+    websocket.send({ action: "discardCards" });
   },
   notifyPickupTask: () => {
-    websocket.send(JSON.stringify({ id: getUserName(), action: "pickupTask" }));
+    websocket.send({ action: "pickupTask" });
   },
   notifyReturnTask: () => {
-    websocket.send(JSON.stringify({ id: getUserName(), action: "returnTask" }));
+    websocket.send({ action: "returnTask" });
   },
 });
 

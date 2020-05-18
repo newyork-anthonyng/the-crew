@@ -11,7 +11,7 @@ const machine = Machine(
       ready: {
         on: {
           discardCard: {
-            actions: ["addCard"],
+            actions: ["discardCard"],
           },
           "partner.discardCards": {
             actions: ["partnerDiscardCards"],
@@ -22,7 +22,7 @@ const machine = Machine(
   },
   {
     actions: {
-      addCard: assign((context, event) => {
+      discardCard: assign((context, event) => {
         const newCards = context.cards.slice();
         newCards.push(event.card);
 

@@ -9,9 +9,7 @@ const wss = new WebSocket.Server({ server });
 const connections = {};
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
-    // FUTURE: Why do we need to double-parse??
-    let parsedMessage = JSON.parse(message);
-    parsedMessage = JSON.parse(parsedMessage);
+    const parsedMessage = JSON.parse(message);
 
     console.log("received message", parsedMessage);
     switch (parsedMessage.action) {

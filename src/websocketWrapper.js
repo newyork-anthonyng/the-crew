@@ -1,3 +1,12 @@
+function getUserName() {
+  const cookies = document.cookie.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    if (cookies[i].startsWith("name=")) {
+      return cookies[i].split("=")[1];
+    }
+  }
+}
+
 function WebSocketWrapper() {
   const host = location.origin.replace(/^http/, "ws");
   const socket = new WebSocket(host);
@@ -44,7 +53,10 @@ function WebSocketWrapper() {
       `%csending message: ${message}`,
       "background-color: orange; color: white;"
     );
-    socket.send(JSON.stringify(message));
+    const newMessage = Object.assign(message, {
+      id: getUserName(),
+    });
+    socket.send(JSON.stringify(newMessage));
   }
 
   return {
