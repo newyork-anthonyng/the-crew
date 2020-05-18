@@ -1,18 +1,16 @@
 function Game() {
   let deck = [];
+  let taskDeck = [];
   let robot = {
-    tasks: [{ rank: "9", suit: "yellow" }],
+    tasks: [],
     cards: [],
   };
   let player1 = {
-    tasks: [
-      { rank: "7", suit: "pink" },
-      { rank: "2", suit: "yellow" },
-    ],
+    tasks: [],
     cards: [],
   };
   let player2 = {
-    tasks: [{ rank: "7", suit: "blue" }],
+    tasks: [],
     cards: [],
   };
   let playArea = {
@@ -22,13 +20,16 @@ function Game() {
   let discardArea = [];
 
   function createNewGame() {
-    createAndShuffleDeck();
+    deck = createAndShuffleDeck();
+    taskDeck = createAndShuffleDeck();
 
     constructRobotCards();
     constructPlayerCards();
+    drawTasks();
   }
 
   function createAndShuffleDeck() {
+    const deck = [];
     const SUITS = ["yellow", "pink", "blue", "green"];
     const RANK_LOW = 1;
     const RANK_HIGH = 9;
@@ -38,7 +39,7 @@ function Game() {
         deck.push({ suit: SUITS[suit], rank });
       }
     }
-    deck = shuffle(deck);
+    return shuffle(deck);
   }
 
   function constructRobotCards() {
@@ -66,6 +67,12 @@ function Game() {
     }
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
       player2.cards.push(deck.pop());
+    }
+  }
+
+  function drawTasks() {
+    for (let i = 0; i < 3; i++) {
+      playArea.tasks.push(taskDeck.pop());
     }
   }
 
