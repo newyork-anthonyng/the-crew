@@ -16,38 +16,38 @@ game.createNewGame();
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
     const parsedMessage = JSON.parse(message);
+    console.log(parsedMessage);
 
     switch (parsedMessage.action) {
       case "load": {
         connections[parsedMessage.id] = ws;
 
+        let state;
         if (parsedMessage.id === process.env.person1) {
-          ws.send(
-            JSON.stringify({
-              action: "loadGame",
-              ...game.getPerson1State(),
-            })
-          );
+          state = game.getPerson1State();
         } else {
-          ws.send(
-            JSON.stringify({
-              action: "loadGame",
-              ...game.getPerson2State(),
-            })
-          );
+          state = game.getPerson2State();
         }
-
+        ws.send(
+          JSON.stringify({
+            action: "loadGame",
+            ...state,
+          })
+        );
         break;
       }
       case "play": {
+        if (parsedMessage.id === process.env.person1) {
+          game.player1Plays(parsedMessage.card);
+        } else {
+          game.player2Plays(parsedMessage.card);
+        }
+
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(
             JSON.stringify({
               action: "partnerPlay",
-              card: {
-                rank: "42",
-                suit: "blue",
-              },
+              card: parsedMessage.card,
             })
           );
         });

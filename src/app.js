@@ -18,8 +18,8 @@ const machine = createMachine({
   loadGame: () => {
     websocket.send({ action: "load" });
   },
-  notifyPlayCard: () => {
-    websocket.send({ action: "play" });
+  notifyPlayCard: (event) => {
+    websocket.send({ action: "play", card: event });
   },
   notifyRobotPlayCard: () => {
     websocket.send({ action: "robotPlay" });

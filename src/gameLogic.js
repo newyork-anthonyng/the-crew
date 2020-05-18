@@ -116,10 +116,33 @@ function Game() {
     return cards.map(() => ({ rank: "?", suit: "?" }));
   }
 
+  function player1Plays(card) {
+    removeCard(card, player1);
+  }
+
+  function player2Plays(card) {
+    removeCard(card, player2);
+  }
+
+  function removeCard(selectedCard, player) {
+    player.cards = player.cards.filter((card) => {
+      const isSameSuit = card.suit === selectedCard.suit;
+      const isSameRank = card.rank === selectedCard.rank;
+
+      return !(isSameSuit && isSameRank);
+    });
+
+    const newPlayerAreaCards = playArea.cards.slice();
+    newPlayerAreaCards.push(selectedCard);
+    playArea.cards = newPlayerAreaCards;
+  }
+
   return {
     createNewGame,
     getPerson1State,
     getPerson2State,
+    player1Plays,
+    player2Plays,
   };
 }
 
