@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const app = express();
@@ -16,17 +17,28 @@ wss.on("connection", (ws) => {
   ws.on("message", (message) => {
     const parsedMessage = JSON.parse(message);
 
-    console.log("received message", parsedMessage);
     switch (parsedMessage.action) {
-      case "load":
+      case "load": {
         connections[parsedMessage.id] = ws;
-        ws.send(
-          JSON.stringify({
-            action: "loadGame",
-            ...game.state(),
-          })
-        );
+
+        if (parsedMessage.id === process.env.person1) {
+          ws.send(
+            JSON.stringify({
+              action: "loadGame",
+              ...game.getPerson1State(),
+            })
+          );
+        } else {
+          ws.send(
+            JSON.stringify({
+              action: "loadGame",
+              ...game.getPerson2State(),
+            })
+          );
+        }
+
         break;
+      }
       case "play": {
         getOtherConnection(parsedMessage.id).forEach((connection) => {
           connection.send(

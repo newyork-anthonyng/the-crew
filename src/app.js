@@ -51,6 +51,15 @@ function App() {
   useEffect(() => {
     websocket.onMessage((message) => {
       const parsedMessage = JSON.parse(message.data);
+      console.group(
+        "%cparsedMessage",
+        "background-color: green; color: white;"
+      );
+      console.log(parsedMessage);
+      console.groupEnd(
+        "%cparsedMessage",
+        "background-color: green; color: white;"
+      );
 
       switch (parsedMessage.action) {
         case "loadGame":

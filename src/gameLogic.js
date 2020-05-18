@@ -1,42 +1,71 @@
 function Game() {
   let deck = [];
-  let robotCards = [];
-  let player1 = [];
-  let player2 = [];
-  let playArea = [];
+  let robot = {
+    tasks: [{ rank: "9", suit: "yellow" }],
+    cards: [],
+  };
+  let player1 = {
+    tasks: [
+      { rank: "7", suit: "pink" },
+      { rank: "2", suit: "yellow" },
+    ],
+    cards: [],
+  };
+  let player2 = {
+    tasks: [{ rank: "7", suit: "blue" }],
+    cards: [],
+  };
+  let playArea = {
+    tasks: [],
+    cards: [],
+  };
   let discardArea = [];
 
   function createNewGame() {
-    const suits = ["yellow", "pink", "blue", "green"];
+    createAndShuffleDeck();
 
-    for (let rank = 1; rank <= 9; rank++) {
-      for (let suit = 0; suit < suits.length; suit++) {
-        deck.push({ suit: suits[suit], rank });
+    constructRobotCards();
+    constructPlayerCards();
+  }
+
+  function createAndShuffleDeck() {
+    const SUITS = ["yellow", "pink", "blue", "green"];
+    const RANK_LOW = 1;
+    const RANK_HIGH = 9;
+
+    for (let rank = RANK_LOW; rank <= RANK_HIGH; rank++) {
+      for (let suit = 0; suit < SUITS.length; suit++) {
+        deck.push({ suit: SUITS[suit], rank });
       }
     }
     deck = shuffle(deck);
+  }
 
-    // construct cards for robot first
-    for (let i = 0; i < 7; i++) {
+  function constructRobotCards() {
+    const ROBOT_COLUMN_SIZE = 7;
+    const CARDS_PER_COLUMN = 2;
+
+    for (let i = 0; i < ROBOT_COLUMN_SIZE; i++) {
       const column = [];
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < CARDS_PER_COLUMN; i++) {
         column.push(deck.pop());
       }
-      robotCards.push(column);
+      robot.cards.push(column);
     }
+  }
 
-    // then add four rocket cards into deck and shuffle
+  function constructPlayerCards() {
     for (let i = 0; i < 4; i++) {
       deck.push({ suit: "trump", rank: i + 1 });
     }
     deck = shuffle(deck);
 
-    // then draw cards for 2 players
-    for (let i = 0; i < 13; i++) {
-      player1.push(deck.pop());
+    const PLAYER_HAND_SIZE = 13;
+    for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
+      player1.cards.push(deck.pop());
     }
-    for (let i = 0; i < 13; i++) {
-      player2.push(deck.pop());
+    for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
+      player2.cards.push(deck.pop());
     }
   }
 
@@ -45,13 +74,10 @@ function Game() {
       temporaryValue,
       randomIndex;
 
-    // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-      // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
 
-      // And swap it with the current element.
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
@@ -60,34 +86,40 @@ function Game() {
     return array;
   }
 
-  function state() {
+  function getPerson1State() {
     return {
-      playArea: {
-        tasks: [{ rank: "9", suit: "orange" }],
-        cards: playArea,
-      },
-      player: {
-        tasks: [
-          { rank: "7", suit: "pink" },
-          { rank: "2", suit: "yellow" },
-        ],
-        cards: player1,
-      },
+      playArea,
+      player: player1,
       partner: {
-        tasks: [{ rank: "7", suit: "blue" }],
-        cards: player2,
+        ...player2,
+        cards: anonymize(player2.cards),
       },
-      robot: {
-        tasks: [{ rank: "9", suit: "yellow" }],
-        cards: robotCards,
-      },
+      robot,
       discardAreaCards: discardArea,
     };
   }
 
+  function getPerson2State() {
+    return {
+      playArea,
+      player: player2,
+      partner: {
+        ...player1,
+        cards: anonymize(player1.cards),
+      },
+      robot,
+      discardAreaCards: discardArea,
+    };
+  }
+
+  function anonymize(cards) {
+    return cards.map(() => ({ rank: "?", suit: "?" }));
+  }
+
   return {
     createNewGame,
-    state,
+    getPerson1State,
+    getPerson2State,
   };
 }
 
