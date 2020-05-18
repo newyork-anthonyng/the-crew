@@ -37,7 +37,7 @@ function Game() {
 
     for (let rank = RANK_LOW; rank <= RANK_HIGH; rank++) {
       for (let suit = 0; suit < SUITS.length; suit++) {
-        deck.push({ suit: SUITS[suit], rank });
+        deck.push({ suit: SUITS[suit], rank: `${rank}` });
       }
     }
     return shuffle(deck);
