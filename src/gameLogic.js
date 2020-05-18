@@ -18,6 +18,7 @@ function Game() {
     cards: [],
   };
   let discardArea = [];
+  const SUITS = ["yellow", "pink", "blue", "green"];
 
   function createNewGame() {
     deck = createAndShuffleDeck();
@@ -30,7 +31,7 @@ function Game() {
 
   function createAndShuffleDeck() {
     const deck = [];
-    const SUITS = ["yellow", "pink", "blue", "green"];
+
     const RANK_LOW = 1;
     const RANK_HIGH = 9;
 
@@ -56,10 +57,7 @@ function Game() {
   }
 
   function constructPlayerCards() {
-    for (let i = 0; i < 4; i++) {
-      deck.push({ suit: "trump", rank: i + 1 });
-    }
-    deck = shuffle(deck);
+    addTrumpCardsToDeck();
 
     const PLAYER_HAND_SIZE = 13;
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
@@ -68,6 +66,40 @@ function Game() {
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
       player2.cards.push(deck.pop());
     }
+
+    sortCards(player1);
+    sortCards(player2);
+  }
+
+  function addTrumpCardsToDeck() {
+    for (let i = 0; i < 4; i++) {
+      deck.push({ suit: "trump", rank: i + 1 });
+    }
+    deck = shuffle(deck);
+  }
+
+  function sortCards(player) {
+    const suits = {};
+    for (let i = 0; i < player.cards.length; i++) {
+      const currentCard = player.cards[i];
+      if (suits[currentCard.suit] === undefined) {
+        suits[currentCard.suit] = [];
+      }
+
+      suits[currentCard.suit].push(currentCard);
+    }
+
+    for (const currentSuit in suits) {
+      suits[currentSuit].sort((a, b) => {
+        return +a.rank - +b.rank;
+      });
+    }
+
+    const sortedCards = Object.values(suits).reduce((accumulated, current) => {
+      return accumulated.concat(current);
+    }, []);
+
+    player.cards = sortedCards;
   }
 
   function drawTasks() {
