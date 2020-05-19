@@ -87,6 +87,10 @@ function App() {
     });
   }, []);
 
+  const handleNewGameClick = () => {
+    websocket.send({ action: "new" });
+  };
+
   if (state.matches("loading")) {
     return (
       <div>
@@ -114,6 +118,8 @@ function App() {
       <Robot robotRef={robotMachine} />
 
       <DiscardArea discardAreaRef={discardAreaMachine} />
+
+      <button onClick={handleNewGameClick}>Create new game</button>
     </div>
   );
 }

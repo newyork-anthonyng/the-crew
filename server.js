@@ -20,6 +20,10 @@ wss.on("connection", (ws) => {
     const isPerson1 = parsedMessage.id === process.env.person1;
 
     switch (parsedMessage.action) {
+      case "new": {
+        game.createNewGame();
+        break;
+      }
       case "load": {
         connections[parsedMessage.id] = ws;
 
