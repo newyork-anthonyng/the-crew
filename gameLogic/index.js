@@ -1,9 +1,6 @@
-const SUITS = ["yellow", "pink", "blue", "green"];
-const TRUMP_SUIT = "trump";
+const Deck = require("./deck");
 const ROBOT_COLUMN_SIZE = 7;
 const CARDS_PER_COLUMN = 2;
-const RANK_LOW = 1;
-const RANK_HIGH = 9;
 const PLAYER_HAND_SIZE = 13;
 
 function Game() {
@@ -28,54 +25,36 @@ function Game() {
   let discardArea = [];
 
   function createNewGame() {
-    deck = createAndShuffleDeck();
-    taskDeck = createAndShuffleDeck();
+    deck = new Deck();
+    taskDeck = new Deck();
 
     constructRobotCards();
     constructPlayerCards();
     drawTasks();
   }
 
-  function createAndShuffleDeck() {
-    const deck = [];
-
-    for (let rank = RANK_LOW; rank <= RANK_HIGH; rank++) {
-      for (let suit = 0; suit < SUITS.length; suit++) {
-        deck.push({ suit: SUITS[suit], rank: `${rank}` });
-      }
-    }
-    return shuffle(deck);
-  }
-
   function constructRobotCards() {
     for (let i = 0; i < ROBOT_COLUMN_SIZE; i++) {
       const column = [];
       for (let i = 0; i < CARDS_PER_COLUMN; i++) {
-        column.push(deck.pop());
+        column.push(deck.draw());
       }
       robot.cards.push(column);
     }
   }
 
   function constructPlayerCards() {
-    addTrumpCardsToDeck();
+    deck.addTrumpCardsToDeck();
 
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
-      player1.cards.push(deck.pop());
+      player1.cards.push(deck.draw());
     }
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
-      player2.cards.push(deck.pop());
+      player2.cards.push(deck.draw());
     }
 
     sortCards(player1);
     sortCards(player2);
-  }
-
-  function addTrumpCardsToDeck() {
-    for (let i = 0; i < 4; i++) {
-      deck.push({ suit: TRUMP_SUIT, rank: i + 1 });
-    }
-    deck = shuffle(deck);
   }
 
   function sortCards(player) {
@@ -112,25 +91,8 @@ function Game() {
 
   function drawTasks() {
     for (let i = 0; i < 3; i++) {
-      playArea.tasks.push(taskDeck.pop());
+      playArea.tasks.push(taskDeck.draw());
     }
-  }
-
-  function shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
   }
 
   function getPerson1State() {

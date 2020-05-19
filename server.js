@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const WebSocket = require("ws");
 const http = require("http");
-const Game = require("./src/gameLogic");
+const Game = require("./gameLogic/index");
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
