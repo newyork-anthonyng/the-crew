@@ -1,3 +1,11 @@
+const SUITS = ["yellow", "pink", "blue", "green"];
+const TRUMP_SUIT = "trump";
+const ROBOT_COLUMN_SIZE = 7;
+const CARDS_PER_COLUMN = 2;
+const RANK_LOW = 1;
+const RANK_HIGH = 9;
+const PLAYER_HAND_SIZE = 13;
+
 function Game() {
   let deck = [];
   let taskDeck = [];
@@ -18,7 +26,6 @@ function Game() {
     cards: [],
   };
   let discardArea = [];
-  const SUITS = ["yellow", "pink", "blue", "green"];
 
   function createNewGame() {
     deck = createAndShuffleDeck();
@@ -32,9 +39,6 @@ function Game() {
   function createAndShuffleDeck() {
     const deck = [];
 
-    const RANK_LOW = 1;
-    const RANK_HIGH = 9;
-
     for (let rank = RANK_LOW; rank <= RANK_HIGH; rank++) {
       for (let suit = 0; suit < SUITS.length; suit++) {
         deck.push({ suit: SUITS[suit], rank: `${rank}` });
@@ -44,9 +48,6 @@ function Game() {
   }
 
   function constructRobotCards() {
-    const ROBOT_COLUMN_SIZE = 7;
-    const CARDS_PER_COLUMN = 2;
-
     for (let i = 0; i < ROBOT_COLUMN_SIZE; i++) {
       const column = [];
       for (let i = 0; i < CARDS_PER_COLUMN; i++) {
@@ -59,7 +60,6 @@ function Game() {
   function constructPlayerCards() {
     addTrumpCardsToDeck();
 
-    const PLAYER_HAND_SIZE = 13;
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
       player1.cards.push(deck.pop());
     }
@@ -73,33 +73,41 @@ function Game() {
 
   function addTrumpCardsToDeck() {
     for (let i = 0; i < 4; i++) {
-      deck.push({ suit: "trump", rank: i + 1 });
+      deck.push({ suit: TRUMP_SUIT, rank: i + 1 });
     }
     deck = shuffle(deck);
   }
 
   function sortCards(player) {
+    const splitCardsBySuit = organizeCardsBySuit(player.cards);
+
+    for (const currentSuit in splitCardsBySuit) {
+      splitCardsBySuit[currentSuit].sort((a, b) => {
+        return +a.rank - +b.rank;
+      });
+    }
+
+    const sortedCards = Object.values(splitCardsBySuit).reduce(
+      (accumulated, current) => {
+        return accumulated.concat(current);
+      },
+      []
+    );
+
+    player.cards = sortedCards;
+  }
+
+  function organizeCardsBySuit(cards) {
     const suits = {};
-    for (let i = 0; i < player.cards.length; i++) {
-      const currentCard = player.cards[i];
+    for (let i = 0; i < cards.length; i++) {
+      const currentCard = cards[i];
       if (suits[currentCard.suit] === undefined) {
         suits[currentCard.suit] = [];
       }
 
       suits[currentCard.suit].push(currentCard);
     }
-
-    for (const currentSuit in suits) {
-      suits[currentSuit].sort((a, b) => {
-        return +a.rank - +b.rank;
-      });
-    }
-
-    const sortedCards = Object.values(suits).reduce((accumulated, current) => {
-      return accumulated.concat(current);
-    }, []);
-
-    player.cards = sortedCards;
+    return suits;
   }
 
   function drawTasks() {
