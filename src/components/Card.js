@@ -10,8 +10,8 @@ function Card({ onClick, rank, suit }) {
       onClick={handleClick}
       data-rank={rank}
       data-suit={suit}
-      style={{ backgroundColor: suit, height: 150, width: 107 }}
-      className="border-solid border border-black rounded cursor-pointer"
+      style={{ height: 98, width: 70 }}
+      className="border-solid border border-black rounded cursor-pointer text-2xl p-1"
     >
       <span>{rank}</span>
     </div>

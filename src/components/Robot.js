@@ -14,10 +14,10 @@ function Robot({ robotRef }) {
   };
 
   return (
-    <div className="border-dashed border-4 border-gray-300">
+    <div className="border border-4 border-gray-300 p-4 mb-16">
       <h1>Robot&apos;s hand</h1>
 
-      <div className="flex">
+      <div className="flex mb-4">
         {cards.map((card, index) => {
           const [faceupCard, facedownCard] = card;
 

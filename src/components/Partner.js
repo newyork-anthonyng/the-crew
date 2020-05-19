@@ -8,9 +8,9 @@ function Partner({ partnerRef }) {
   const [state] = useService(partnerRef);
   const { cards, tasks } = state.context;
   return (
-    <div className="border-dashed border-4 border-gray-300">
+    <div className="border border-4 border-gray-300 p-4 mb-16">
       Partner&apos;s hand
-      <div className="flex">
+      <div className="flex mb-4">
         {cards.map((card, index) => {
           return <FacedownCard key={index} />;
         })}
@@ -18,15 +18,17 @@ function Partner({ partnerRef }) {
       <div>
         <h2>Partner&apos;s tasks</h2>
         <div className="flex">
-          {tasks.map((task) => {
-            return (
-              <Task
-                rank={task.rank}
-                suit={task.suit}
-                key={`${task.rank}-${task.suit}`}
-              />
-            );
-          })}
+          {tasks.length > 0
+            ? tasks.map((task) => {
+                return (
+                  <Task
+                    rank={task.rank}
+                    suit={task.suit}
+                    key={`${task.rank}-${task.suit}`}
+                  />
+                );
+              })
+            : "None"}
         </div>
       </div>
     </div>

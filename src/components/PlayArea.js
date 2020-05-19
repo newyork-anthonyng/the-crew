@@ -21,10 +21,10 @@ function PlayArea({ playAreaRef }) {
   };
 
   return (
-    <div className="border-dashed border-4 border-gray-600 p-4">
+    <div className="border border-4 border-gray-300 p-4 mb-16">
       <h1>Play area</h1>
 
-      <div className="flex">
+      <div className="flex mb-4">
         {cards.map((card) => {
           return (
             <Card
@@ -35,15 +35,15 @@ function PlayArea({ playAreaRef }) {
             />
           );
         })}
-      </div>
 
-      <button
-        type="button"
-        onClick={handleDiscardCardClick}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Move play area cards to discard
-      </button>
+        <button
+          type="button"
+          onClick={handleDiscardCardClick}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Move play area cards to discard
+        </button>
+      </div>
 
       {tasks.length > 0 && (
         <div>

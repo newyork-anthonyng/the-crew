@@ -3,3 +3,25 @@
 @import "tailwindcss/components";
 
 @import "tailwindcss/utilities";
+
+[data-suit="pink"] {
+    background-color: #d43da4;
+}
+
+
+[data-suit="yellow"] {
+    background-color: #e28b00;
+}
+
+[data-suit="blue"] {
+    background-color: #53bfcd;
+}
+
+[data-suit="green"] {
+    background-color: #59d471;
+}
+
+[data-suit="trump"] {
+    background-color: #6b6866;
+    color: white;
+}
