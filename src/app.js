@@ -109,15 +109,18 @@ function App() {
 
   return (
     <div>
-      <Player playerRef={playerMachine} />
-
-      <PlayArea playAreaRef={playAreaMachine} />
-
-      <Partner partnerRef={partnerMachine} />
+      <div className="flex justify-between">
+        <PlayArea playAreaRef={playAreaMachine} />
+        <DiscardArea discardAreaRef={discardAreaMachine} />
+      </div>
 
       <Robot robotRef={robotMachine} />
 
-      <DiscardArea discardAreaRef={discardAreaMachine} />
+      <div className="flex justify-between">
+        <Player playerRef={playerMachine} />
+
+        <Partner partnerRef={partnerMachine} />
+      </div>
 
       <button onClick={handleNewGameClick}>Create new game</button>
     </div>

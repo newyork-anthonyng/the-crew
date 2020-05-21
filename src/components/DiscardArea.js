@@ -11,11 +11,11 @@ function DiscardArea({ discardAreaRef }) {
     <div className="border border-4 border-gray-300 p-4 mb-8">
       <h1>Discard Area</h1>
 
-      <div className="relative">
+      <div className="flex">
         {cards.map((card, index) => {
           return (
             <DiscardCard
-              style={{ left: index * 10, top: index * 10 }}
+              style={{ marginLeft: index === 0 ? 0 : -40 }}
               key={`${card.rank}-${card.suit}`}
             />
           );

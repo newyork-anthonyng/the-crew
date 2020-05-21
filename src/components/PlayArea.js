@@ -35,15 +35,14 @@ function PlayArea({ playAreaRef }) {
             />
           );
         })}
-
-        <button
-          type="button"
-          onClick={handleDiscardCardClick}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Move play area cards to discard
-        </button>
       </div>
+      <button
+        type="button"
+        onClick={handleDiscardCardClick}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Move play area cards to discard
+      </button>
 
       {tasks.length > 0 && (
         <div>
