@@ -20,14 +20,18 @@ function Player({ playerRef }) {
     <div className="border border-4 border-gray-300 mb-16 p-4">
       <h1>Your hand</h1>
       <div className="flex mb-4">
-        {cards.map((card) => {
+        {cards.map((card, index) => {
           return (
-            <Card
-              rank={card.rank}
-              suit={card.suit}
-              onClick={handleCardClick}
+            <div
+              style={{ marginLeft: index === 0 ? 0 : -40 }}
               key={`${card.rank}-${card.suit}`}
-            />
+            >
+              <Card
+                rank={card.rank}
+                suit={card.suit}
+                onClick={handleCardClick}
+              />
+            </div>
           );
         })}
       </div>
