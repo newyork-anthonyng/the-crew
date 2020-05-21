@@ -14,7 +14,7 @@ function Robot({ robotRef }) {
   };
 
   return (
-    <div className="border border-4 border-gray-300 p-4 mb-16">
+    <div className="border border-4 border-gray-300 p-4 mb-8">
       <h1>Robot&apos;s hand</h1>
 
       <div className="flex mb-4">

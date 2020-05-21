@@ -17,7 +17,7 @@ function Player({ playerRef }) {
   };
 
   return (
-    <div className="border border-4 border-gray-300 mb-16 p-4">
+    <div className="border border-4 border-gray-300 mb-8 p-4">
       <h1>Your hand</h1>
       <div className="flex mb-4">
         {cards.map((card, index) => {
