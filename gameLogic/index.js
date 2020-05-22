@@ -1,4 +1,5 @@
 const Deck = require("./deck");
+const PlayerEntity = require("./playerEntity");
 const ROBOT_COLUMN_SIZE = 7;
 const CARDS_PER_COLUMN = 2;
 const PLAYER_HAND_SIZE = 13;
@@ -6,25 +7,19 @@ const PLAYER_HAND_SIZE = 13;
 function Game() {
   let deck = [];
   let taskDeck = [];
-  let robot = {
-    tasks: [],
-    cards: [],
-  };
-  let player1 = {
-    tasks: [],
-    cards: [],
-  };
-  let player2 = {
-    tasks: [],
-    cards: [],
-  };
-  let playArea = {
-    tasks: [],
-    cards: [],
-  };
+
+  let robot = new PlayerEntity();
+  let player1 = new PlayerEntity();
+  let player2 = new PlayerEntity();
+  let playArea = new PlayerEntity();
   let discardArea = [];
 
   function createNewGame() {
+    robot.reset();
+    player1.reset();
+    player2.reset();
+    playArea.reset();
+
     deck = new Deck();
     taskDeck = new Deck();
 
@@ -39,7 +34,7 @@ function Game() {
       for (let i = 0; i < CARDS_PER_COLUMN; i++) {
         column.push(deck.draw());
       }
-      robot.cards.push(column);
+      robot.drawCard(column);
     }
   }
 
@@ -47,177 +42,92 @@ function Game() {
     deck.addTrumpCardsToDeck();
 
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
-      player1.cards.push(deck.draw());
+      player1.drawCard(deck.draw());
+      player1.sortCards();
     }
     for (let i = 0; i < PLAYER_HAND_SIZE; i++) {
-      player2.cards.push(deck.draw());
+      player2.drawCard(deck.draw());
+      player2.sortCards();
     }
-
-    sortCards(player1);
-    sortCards(player2);
-  }
-
-  function sortCards(player) {
-    const splitCardsBySuit = organizeCardsBySuit(player.cards);
-
-    for (const currentSuit in splitCardsBySuit) {
-      splitCardsBySuit[currentSuit].sort((a, b) => {
-        return +a.rank - +b.rank;
-      });
-    }
-
-    const sortedCards = Object.values(splitCardsBySuit).reduce(
-      (accumulated, current) => {
-        return accumulated.concat(current);
-      },
-      []
-    );
-
-    player.cards = sortedCards;
-  }
-
-  function organizeCardsBySuit(cards) {
-    const suits = {};
-    for (let i = 0; i < cards.length; i++) {
-      const currentCard = cards[i];
-      if (suits[currentCard.suit] === undefined) {
-        suits[currentCard.suit] = [];
-      }
-
-      suits[currentCard.suit].push(currentCard);
-    }
-    return suits;
   }
 
   function drawTasks() {
     for (let i = 0; i < 3; i++) {
-      playArea.tasks.push(taskDeck.draw());
+      playArea.drawTask(taskDeck.draw());
     }
   }
 
   function getPerson1State() {
     return {
-      playArea,
-      player: player1,
-      partner: {
-        ...player2,
-        cards: anonymize(player2.cards),
-      },
-      robot,
+      playArea: playArea.state(),
+      player: player1.state(),
+      partner: player2.anonymousState(),
+      robot: robot.state(),
       discardAreaCards: discardArea,
     };
   }
 
   function getPerson2State() {
     return {
-      playArea,
+      playArea: playArea.state(),
       player: player2,
-      partner: {
-        ...player1,
-        cards: anonymize(player1.cards),
-      },
-      robot,
+      partner: player1.anonymousState(),
+      robot: robot.state(),
       discardAreaCards: discardArea,
     };
   }
 
-  function anonymize(cards) {
-    return cards.map(() => ({ rank: "?", suit: "?" }));
-  }
-
   function player1Plays(card) {
-    removeCard(card, player1);
-    addCard(card, playArea);
+    player1.removeCard(card);
+    playArea.drawCard(card);
   }
 
   function player2Plays(card) {
-    removeCard(card, player2);
-    addCard(card, playArea);
-  }
-
-  function removeCard(selectedCard, player) {
-    player.cards = player.cards.filter((card) => {
-      const isSameSuit = card.suit === selectedCard.suit;
-      const isSameRank = card.rank === selectedCard.rank;
-
-      return !(isSameSuit && isSameRank);
-    });
-  }
-
-  function addCard(card, player) {
-    const newCards = player.cards.slice();
-    newCards.push(card);
-    player.cards = newCards;
+    player2.removeCard(card);
+    playArea.drawCard(card);
   }
 
   function robotPlays(selectedCard) {
-    robot.cards = robot.cards.filter((card) => {
-      const isSameSuit = card.suit === selectedCard.suit;
-      const isSameRank = card.rank === selectedCard.rank;
-
-      return !(isSameSuit && isSameRank);
-    });
-
-    const newPlayerAreaCards = playArea.cards.slice();
-    newPlayerAreaCards.push(selectedCard);
-    playArea.cards = newPlayerAreaCards;
+    robot.removeCard(selectedCard);
+    playArea.drawCard(selectedCard);
   }
 
   function player1Returns(card) {
-    addCard(card, player1);
+    player1.drawCard(card);
+    player1.sortCards();
 
-    removeCard(card, playArea);
+    playArea.removeCard(card);
   }
 
   function player2Returns(card) {
-    addCard(card, player1);
+    player2.drawCard(card);
+    player2.sortCards();
 
-    removeCard(card, playArea);
+    playArea.removeCard(card);
   }
 
   function discardCards() {
-    const discardedCards = playArea.cards.slice();
-    discardArea = discardedCards;
-    playArea.cards = [];
-
-    return discardedCards;
+    return playArea.discardCards();
   }
 
   function player1PicksTask(task) {
-    addTask(task, player1);
-
-    removeTask(task, playArea);
+    player1.drawTask(task);
+    playArea.removeTask(task);
   }
 
   function player2PicksTask(task) {
-    addTask(task, player2);
-
-    removeTask(task, playArea);
-  }
-
-  function addTask(task, player) {
-    const newTasks = player.tasks.slice();
-    newTasks.push(task);
-    player.tasks = newTasks;
-  }
-
-  function removeTask(selectedTask, player) {
-    player.tasks = player.tasks.filter((task) => {
-      const isSameSuit = task.suit === selectedTask.suit;
-      const isSameRank = task.rank === selectedTask.rank;
-
-      return !(isSameSuit && isSameRank);
-    });
+    player2.drawTask(task);
+    playArea.removeTask(task);
   }
 
   function player1ReturnsTask(task) {
-    removeTask(task, player1);
-    addTask(task, playArea);
+    player1.removeTask(task);
+    playArea.drawTask(task);
   }
 
   function player2ReturnsTask(task) {
-    removeTask(task, player2);
-    addTask(task, playArea);
+    player2.removeTask(task);
+    playArea.drawTask(task);
   }
 
   return {
